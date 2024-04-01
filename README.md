@@ -1,6 +1,6 @@
 # Cisco Observability Platform Examples
 
-[![Lint](https://github.com/cisco-ospo/oss-template/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/cisco-ospo/oss-template/actions/workflows/lint.yml)
+[![Lint](https://github.com/cisco-open/observability-examples/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/cisco-open/observability-examples/actions/workflows/lint.yml)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](CODE_OF_CONDUCT.md)
 [![Maintainer](https://img.shields.io/badge/Maintainer-Cisco-lightblue)](https://opensource.cisco.com/)
 
@@ -19,7 +19,7 @@ This is an example of how to list things you need to use the software and how to
 
 - brew
 
-  Install homebrew if not already installed from [https://brew.sh](https://brew.sh)
+  Install [Homebrew](https://brew.sh) if not already installed.
 
 - fsoc
 
@@ -55,5 +55,4 @@ Distributed under the `Apache Software License` License. See [LICENSE](LICENSE) 
 
 ## Contact
 
-Please use github issues at
-[https://github.com/cisco-open/observability-examples/issues](https://github.com/cisco-open/observability-examples/issues).
+For all project feedback, please use [Github Issues](https://github.com/cisco-open/observability-examples/issues).
