@@ -257,35 +257,45 @@ think of  a type as similar to a table in a traditional database
 as we will do, or a user or UI via an API call, the Knowledge Store must have a way to uniquely identify the
 object. `identifyingProperties` is a JSON Pointer that tells the system which field of an ingvestigation object
 can be used to uniquely identify it. We will be changing the identifyingProperties from `["/name"]` to `["/name", "/caseID"]`
+
 ```json
     "identifyingProperties": [
         "/name", "/caseID"
     ]
 ```
+
 Let's briefly discuss how the 
 Knowledge Store REST APIs leverage object _identity_. Consider that two solutions can both create a type called
 investigation. This clash is resolved by using _fully qualified_ id's. For example, try this command to list solutions
 in your cell:
-```shell
+
+```sh
 fsoc solution list --verbose
 ```
+
 you will see that one of the lines printed to the terminal is 
-```
+
+```sh
 * Calling the observability platform API method=GET path=knowledge-store/v1/objects/extensibility:solution
 ```
+
 This means the `fsoc` command is making a REST call to list all objects of with fully qualified type `extensibility:solution`
+
 ```html
 https://<your-tenant-hostname>/knowledge-store/v1/objects/extensibility:solution
 ```
+
 In the API call above, `extensibility:solution` is a fully qualifed type. We can infer that solution management
 in the platform is implemented as a System Solution called `extensibility` that has defined a Type
 called `solution`, in which it stores details about every solution that has been pushed to the platform.
 
 Recall that the name of your solution is `$SOLUTION_PREFIXmalwareexample`. This
 means tht the fully qualifed name of your investigation Type is:
-```
+
+```sh
 $SOLUTION_PREFIXmalwareexample:investigation`
 ```
+
 * `jsonSchema` - this is where we need to define our type's json document structure. As you can
 see from the JSON below, the json schema for the ingestigation contains numerous fields ranging from 
 the identifying property (`caseID`) to `description`, `severity`, and `affectedSystems`
