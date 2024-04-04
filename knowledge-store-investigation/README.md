@@ -1,15 +1,19 @@
-Our goal in this example is to provide step-by-step insructions for creating a solution
-that contains a knowledge Type definiton for a network/malware security investigation.
+# knowledge-store-investigation
+
+Our goal in this example is to provide step-by-step insructions for creating a
+solution that contains a knowledge Type definiton for a network/malware security
+investigation.
 
 You will learn:
+
 1. How a solution package is structured
 2. How to define a new Type of knowledge
 3. How to push your solution
 4. How to query for your Type, and actual knowledge objects
 5. How to apply access control to your knowledge model
 
-
 The `package` folder contains the solution structure.
+
 ```text
 
 ├── README.md
@@ -28,19 +32,23 @@ The `package` folder contains the solution structure.
 ├── status.sh
 └── validate.sh
 ```
-Make sure all the script have executable permission by running this command in the `knowledge-store-investigation`
-folder.
+
+Make sure all the script have executable permission by running this command in
+the `knowledge-store-investigation` folder.
+
 ```shell
 chmod u+x *.sh
 ```
 
 run the `checkFSOC.sh`script to verify you have a recent version of the COP CLI
+
 ```shell
 ./checkFSOC.sh
 ```
 
-run the `fork.sh`script. It will copy the solution `package` folder into a new solution folder prefixed with 
-your username. There are also several file in the solution where your username will be injected.
+run the `fork.sh`script. It will copy the solution `package` folder into a new
+solution folder prefixed with your username. There are also several file in the
+solution where your username will be injected.
 
 ```text
 .
@@ -70,7 +78,10 @@ your username. There are also several file in the solution where your username w
 ```
 
 Verify you have a folder whose name is `<your-username>malwareexample`
-You now have a solution manifest file `<your-username>malwareexample/manifest.json` that looks like this, with `$SOLUTION_PREFIX` replaced by your username:
+You now have a solution manifest file
+`<your-username>malwareexample/manifest.json` that looks like this, with
+`$SOLUTION_PREFIX` replaced by your username:
+
 ```json
 {
   "manifestVersion": "1.1.0",
@@ -102,11 +113,12 @@ You now have a solution manifest file `<your-username>malwareexample/manifest.js
 }
 ```
 
-Let's look at the investigation Type definition. 
+Let's look at the investigation Type definition.
 
 ```shell
 cat investigation.json
 ```
+
 ```json
 {
   "name": "investigation",
@@ -240,58 +252,83 @@ cat investigation.json
   }
 }
 ```
+
 A Type declaration has these parts:
-* `name` - the name field is fine. It is set to 'investigation'. When we push this solution, it means that tenants
-who subscribe to your solution (inlcuding you!) will be able to access a totally new knowledge type. You can 
-think of  a type as similar to a table in a traditional database
-* `allowedLayers` - The knowledge store allows `SOLUTION`, `TENANT`, and `USER` access. Objects placed in solution packages,
-  are replicated to all Cells in the COP. Default knowledge layering policies make your SOLUTION objects visible to TENANT
-  and USER principals in every cell. To illustrate how layering works, in this example we wish to include an object with
-  suitable defaults for network intrusion investigations.  However, we want tenant admin to be able to
-  customize investigation defaults which may have different requirements in different regions. For this
-  reason we set `allowdLayers` to `TENANT` in the investigation type definitoin, `investigation.json`.
-  However, we also want to allow USERs to create investigations within a tenant, and to see the tenant-specific
-  defaults that are applicable to, for example European Union. For this reason we add USER to the `allowedLayers`
+
+* `name` - the name field is fine. It is set to 'investigation'. When we push
+this solution, it means that tenants who subscribe to your solution (inlcuding
+you!) will be able to access a totally new knowledge type. You can think of  a
+type as similar to a table in a traditional database
+* `allowedLayers` - The knowledge store allows `SOLUTION`, `TENANT`, and `USER`
+access. Objects placed in solution packages, are replicated to all Cells in the
+COP. Default knowledge layering policies make your SOLUTION objects visible to
+TENANT and USER principals in every cell. To illustrate how layering works, in
+this example we wish to include an object with suitable defaults for network
+intrusion investigations.  However, we want tenant admin to be able to customize
+investigation defaults which may have different requirements in different
+regions. For this reason we set `allowdLayers` to `TENANT` in the investigation
+type definitoin, `investigation.json`. However, we also want to allow USERs to
+create investigations within a tenant, and to see the tenant-specific defaults
+that are applicable to, for example European Union. For this reason we add USER
+to the `allowedLayers`
   ![Layering](https://raw.githubusercontent.com/geoffhendrey/cop-examples/main/assets/knowledge%20replication.png)
-* `identifyingProperties` - When we store an actual investigation object, whether it is coming from a solution package
-as we will do, or a user or UI via an API call, the Knowledge Store must have a way to uniquely identify the
-object. `identifyingProperties` is a JSON Pointer that tells the system which field of an ingvestigation object
-can be used to uniquely identify it. We will be changing the identifyingProperties from `["/name"]` to `["/name", "/caseID"]`
-```json
+* `identifyingProperties` - When we store an actual investigation object,
+whether it is coming from a solution package as we will do, or a user or UI via
+an API call, the Knowledge Store must have a way to uniquely identify the
+object. `identifyingProperties` is a JSON Pointer that tells the system which
+field of an ingvestigation object can be used to uniquely identify it. We will
+be changing the identifyingProperties from
+ `["/name"]` to `["/name", "/caseID"]`
+
+```shell
     "identifyingProperties": [
         "/name", "/caseID"
     ]
 ```
-Let's briefly discuss how the 
-Knowledge Store REST APIs leverage object _identity_. Consider that two solutions can both create a type called
-investigation. This clash is resolved by using _fully qualified_ id's. For example, try this command to list solutions
+
+Let's briefly discuss how the
+Knowledge Store REST APIs leverage object _identity_. Consider that two
+solutions can both create a type called investigation. This clash is resolved by
+using _fully qualified_ id's. For example, try this command to list solutions
 in your cell:
+
 ```shell
 fsoc solution list --verbose
 ```
-you will see that one of the lines printed to the terminal is 
-```
+
+you will see that one of the lines printed to the terminal is
+
+```shell
 * Calling the observability platform API method=GET path=knowledge-store/v1/objects/extensibility:solution
 ```
-This means the `fsoc` command is making a REST call to list all objects of with fully qualified type `extensibility:solution`
+
+This means the `fsoc` command is making a REST call to list all objects of with
+fully qualified type `extensibility:solution`
+
 ```html
 https://<your-tenant-hostname>/knowledge-store/v1/objects/extensibility:solution
 ```
-In the API call above, `extensibility:solution` is a fully qualifed type. We can infer that solution management
-in the platform is implemented as a System Solution called `extensibility` that has defined a Type
-called `solution`, in which it stores details about every solution that has been pushed to the platform.
+
+In the API call above, `extensibility:solution` is a fully qualifed type. We can
+infer that solution management in the platform is implemented as a System
+Solution called `extensibility` that has defined a Type called `solution`, in
+which it stores details about every solution that has been pushed to the
+platform.
 
 Recall that the name of your solution is `$SOLUTION_PREFIXmalwareexample`. This
 means tht the fully qualifed name of your investigation Type is:
-```
+
+```shell
 $SOLUTION_PREFIXmalwareexample:investigation`
 ```
-* `jsonSchema` - this is where we need to define our type's json document structure. As you can
-see from the JSON below, the json schema for the ingestigation contains numerous fields ranging from 
-the identifying property (`caseID`) to `description`, `severity`, and `affectedSystems`
 
-Let's now examine the  `malwareInvestigationDefaults.json` object. The first thing to note is that it complies
-with the JSON schema for `investigation`
+* `jsonSchema` - this is where we need to define our type's json document
+structure. As you can see from the JSON below, the json schema for the
+investigation contains numerous fields ranging from the identifying property
+(`caseID`) to `description`, `severity`, and `affectedSystems`
+
+Let's now examine the  `malwareInvestigationDefaults.json` object. The first
+thing to note is that it complies with the JSON schema for `investigation`
 
 ```json
 {
@@ -329,18 +366,23 @@ with the JSON schema for `investigation`
   "lessonsLearned": "Enhanced endpoint security measures."
 }
 ```
+
 Now run `validate.sh` to check your solution for errors:
+
 ```shell
 ./validate.sh
 ```
 
 The next step is to push your solution to the platform. This assumes
-you already have familiarity with [fsoc](https://github.com/cisco-open/fsoc). Run the
-`push.sh` script.
+you already have familiarity with [fsoc](https://github.com/cisco-open/fsoc).
+Run the `push.sh` script.
+
 ```shell
 ./push.sh
 ```
+
 The script uses the `fsoc` command like this:
+
 ```shell
 GHENDREY-M-NWK4:ghendreymalwareexample ghendrey$ fsoc solution push --stable
 Creating solution zip: "/var/folders/_h/gk53dw4j4vx9k0zjtpy_k3wm0000gn/T/ghendreymalwareexample3885208973.zip"
@@ -348,11 +390,15 @@ Deploying solution ghendreymalwareexample version 1.0.0 with tag stable
    • Current token is no longer valid; trying to refresh
 Successfully uploaded solution ghendreymalwareexample version 1.0.0 with tag stable.
 ```
+
 Subscribe to your solution
+
 ```shell
 fsoc solution subscribe <USERNAME>malwareexample
 ```
+
 Check the status of your subscription using the included `status.sh`:
+
 ```shell
 GHENDREY-M-NWK4:knowledge-store-investigation ghendrey$ ./status.sh
 SOLUTION_PREFIX set to: ghendrey
@@ -366,10 +412,14 @@ Current Solution Install Successful?: true
        Current Solution Install Time: 2024-01-19T20:54:14.415Z
     Current Solution Install Message:
 ```
-Query the Type definition for investigation. Be sure to replace your username in the fsoc command below :
+
+Query the Type definition for investigation. Be sure to replace your username in
+the fsoc command below :
+
 ```shell
 fsoc knowledge get-type --type "USERNAMEmalwareexample:investigation" 
 ```
+
 ```yaml
 allowedLayers:
     - SOLUTION
@@ -477,15 +527,21 @@ name: investigation
 solution: ghendreymalwareexample
 updatedAt: "2024-01-19T20:54:14.757Z"
 ```
-In addition to the type definition, an object included in `package/objects/malwareInvestigationDefaults.json` has been added 
-has been inserted into the store. In fact, any objects included in your solution are added. As mentioned
-earlier, solution objects are added to the knowledge store at the SOLUTION layer. Now query the knowledge store
-to read back the object and verify it is in the store. In the fsoc command below, be sure to replace USERNAME
-with your username.
+
+In addition to the type definition, an object included in
+`package/objects/malwareInvestigationDefaults.json` has been added has been
+inserted into the store. In fact, any objects included in your solution are
+added. As mentioned earlier, solution objects are added to the knowledge store
+at the SOLUTION layer. Now query the knowledge store to read back the object and
+verify it is in the store. In the fsoc command below, be sure to replace
+USERNAME with your username.
+
 ```shell
 fsoc  knowledge get --layer-type=SOLUTION  --type=USERNAMEmalwareexample:investigation  --layer-id=USERNAMEmalwareexample --object-id='USERNAMEmalwareexample:/name=Malware Incident Report;/caseID=Example:00000'
 ```
+
 In the response, note that your object is contained in the `data` field
+
 ```YAML
 createdAt: "2024-01-19T20:54:14.768Z"
 data:
@@ -535,16 +591,24 @@ patch: null
 targetObjectId: null
 
 ```
-Note, if you want to query all existing investigations, lust leave off the `--objectID` (as usual, USERNAME is your username).
-This query returns a page of objects.
+
+Note, if you want to query all existing investigations, lust leave off the
+`--objectID` (as usual, USERNAME is your username). This query returns a page of
+objects.
+
 ```shell
 fsoc  knowledge get --layer-type=SOLUTION  --type=USERNAMEmalwareexample:investigation  --layer-id=USERNAMEmalwareexample
 ```
-The Cisco Observability Platform contains several built-in roles. This example solution grants some of those
-roles with permission to access the malware investigation Type. The solution includes `permissions.json` and
-`role-to-permission-mappings.json`. Note that after running the `fork.sh` script, SOLUTION_PREFIX has been replaced with your username from your local operating system.
+
+The Cisco Observability Platform contains several built-in roles. This example
+solution grants some of those roles with permission to access the malware
+investigation Type. The solution includes `permissions.json` and
+`role-to-permission-mappings.json`. Note that after running the `fork.sh`
+script, SOLUTION_PREFIX has been replaced with your username from your local
+operating system.
 
 Here is `permissions.json`
+
 ```json
   {
     "name": "readMalwareInvestigation",
@@ -562,7 +626,9 @@ Here is `permissions.json`
     ]
   }
 ```
+
 Here is `role-to-permission-mappings.json`
+
 ```json
 {
   "name": "malwareRoleMappings",
@@ -578,14 +644,20 @@ Here is `role-to-permission-mappings.json`
   ]
 }
 ```
-If you looked closely at `manifest.json` you may have noticed the line `"dependencies": ["iam"]`. Dependency management is
-a key aspect of the Cisco Observability Platform. In order to add the permission and role files, the manifest declares
-a dependency on the system `iam` solution that defines Types `iam:Permission` and `iam:RoleToPermissionMapping`. This allows
-the solution to add objects whose types are defined in other solutions.
 
-Next steps: If you want to modify your solution, remember to bump the `solutionVersion` in `manifest.json`. 
+If you looked closely at `manifest.json` you may have noticed the line
+`"dependencies": ["iam"]`. Dependency management is a key aspect of the Cisco
+Observability Platform. In order to add the permission and role files, the
+manifest declares a dependency on the system `iam` solution that defines Types
+`iam:Permission` and `iam:RoleToPermissionMapping`. This allows the solution to
+add objects whose types are defined in other solutions.
 
-Congratulations! You now understand the basics of knowledge modeling. To Review, you leared:
+Next steps: If you want to modify your solution, remember to bump the
+`solutionVersion` in `manifest.json`.
+
+Congratulations! You now understand the basics of knowledge modeling. To Review,
+you learned:
+
 1. How a solution package is structured
 2. How to define a new Type of knowledge
 3. How to push your solution
