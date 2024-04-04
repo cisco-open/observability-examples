@@ -12,6 +12,7 @@ You will learn:
 4. How to query for your Type, and actual knowledge objects
 5. How to apply access control to your knowledge model
 
+
 The `package` folder contains the solution structure.
 
 ```text
@@ -46,9 +47,11 @@ run the `checkFSOC.sh`script to verify you have a recent version of the COP CLI
 ./checkFSOC.sh
 ```
 
+
 run the `fork.sh`script. It will copy the solution `package` folder into a new
 solution folder prefixed with your username. There are also several file in the
 solution where your username will be injected.
+
 
 ```text
 .
@@ -78,6 +81,7 @@ solution where your username will be injected.
 ```
 
 Verify you have a folder whose name is `<your-username>malwareexample`
+
 You now have a solution manifest file
 `<your-username>malwareexample/manifest.json` that looks like this, with
 `$SOLUTION_PREFIX` replaced by your username:
@@ -112,6 +116,7 @@ You now have a solution manifest file
   ]
 }
 ```
+
 
 Let's look at the investigation Type definition.
 
@@ -281,6 +286,7 @@ be changing the identifyingProperties from
  `["/name"]` to `["/name", "/caseID"]`
 
 ```shell
+
     "identifyingProperties": [
         "/name", "/caseID"
     ]
@@ -305,6 +311,7 @@ you will see that one of the lines printed to the terminal is
 This means the `fsoc` command is making a REST call to list all objects of with
 fully qualified type `extensibility:solution`
 
+
 ```html
 https://<your-tenant-hostname>/knowledge-store/v1/objects/extensibility:solution
 ```
@@ -315,8 +322,10 @@ Solution called `extensibility` that has defined a Type called `solution`, in
 which it stores details about every solution that has been pushed to the
 platform.
 
+
 Recall that the name of your solution is `$SOLUTION_PREFIXmalwareexample`. This
 means tht the fully qualifed name of your investigation Type is:
+
 
 ```shell
 $SOLUTION_PREFIXmalwareexample:investigation`
@@ -591,7 +600,6 @@ patch: null
 targetObjectId: null
 
 ```
-
 Note, if you want to query all existing investigations, lust leave off the
 `--objectID` (as usual, USERNAME is your username). This query returns a page of
 objects.
