@@ -11,21 +11,25 @@ You will learn how to:
 1. Test the solution by using Query Builder
 
 # Create a Codex workflow
-We'll create a workflow designed to count health rule violations for Kubernetes workloads and APM services. The logic of the workflow can be broken down into several steps:
-1. Subscribe to the trigger event 
-1. Validate event type and entity relevance 
-1. Publish a measurement event
 
+We'll create a workflow designed to count health rule violations for Kubernetes workloads and APM services. The logic of the workflow can be broken down into several steps:
+
+1. Subscribe to the trigger event
+1. Validate event type and entity relevance
+1. Publish a measurement event
 
 ## 1. Subscribe to the trigger event
 
 ### Find the trigger event
 
 Let’s query our trigger using [fsoc](https://github.com/cisco-open/fsoc):
+
 ```shell
 fsoc knowledge get --type=contracts:cloudevent --object-id=platform:event.enriched.v1 --layer-type=TENANT
 ```
+
 Output:
+
 ```yaml
 type: event.enriched.v1
 description: Indicates that an event was enriched with topology tags
@@ -39,6 +43,7 @@ extensions:
 ### Subscribe to the event
 
 To subscribe to this event, you need to add an event definition and event state referencing this definition (note a nature of the reference to the event – it must be qualified with its knowledge type):
+
 ```yaml
 events:
 - name: EventReceived
@@ -53,15 +58,18 @@ states:
    - eventRefs:
       - EventReceived
 ```
+
 ### Inspect the event
 
 Since the data in workflows is received in JSON format, event data is described in JSON schema.\
 Let’s look at the JSON schema of this event (referenced in dataschema), so you know what to expect in our workflow:
+
 ```shell
 fsoc knowledge get --type=contracts:jsonSchema --object-id=platform:event.v1 --layer-type=TENANT
 ```
 
 Result:
+
 ```yaml
 $schema: http://json-schema.org/draft-07/schema#
 title: Event
@@ -135,6 +143,7 @@ definitions:
 
 It’s straightforward – a single event, with one or more entity references. Since dataOnly=false, the payload of the event will be enclosed in the data field, and extension attributes will also be available to the workflow.\
 Since we know the exact FMM event type we are interested in, you can also query its definition to understand the attributes that the workflow will be receiving and their semantics:
+
 ```shell
 fsoc knowledge get --type=fmm:event --filter="data.name eq \"healthrule.violation\" and data.namespace.name eq \"alerting\"" --layer-type=TENANT
 ```
@@ -142,6 +151,7 @@ fsoc knowledge get --type=fmm:event --filter="data.name eq \"healthrule.violatio
 ## 2. Validate event relevance
 
 You need to ensure that the event you receive is of the correct FMM event type, and that referenced entities are relevant. To do this, you can write an expression in JSONata and then use it in an action condition:
+
 ```yaml
 functions:
 - name: checkType
@@ -169,11 +179,13 @@ states:
 ## 3. Create and publish an event
 
 Let’s find the measurement observation event that you need to publish:
+
 ```shell
 fsoc knowledge get --type=contracts:cloudevent --object-id=platform:measurement.received.v1 --layer-type=TENANT
 ```
 
 Output:
+
 ```yaml
 type: measurement.received.v1
 description: Indicates that measurements were received. Measurements are then aggregated into a metric.
@@ -184,11 +196,13 @@ extensions:
 ```
 
 Now let’s look at the measurement schema, so you know how to produce a measurement event:
+
 ```shell
 fsoc knowledge get --type=contracts:jsonSchema --object-id=platform:measurement.v1 --layer-type=TENANT
 ```
 
 Output:
+
 ```yaml
 $schema: http://json-schema.org/draft-07/schema#
 title: Measurements for a specific metric
@@ -294,7 +308,7 @@ states:
         toStateData: '${ measurement }'
 ```
 
-Here we are preserving the violation_severity attribute from the original event and associating the measurement with the same entity. 
+Here we are preserving the violation_severity attribute from the original event and associating the measurement with the same entity.
 
 The state execution will result in a measurement field created by createMeasurement action, but only if the event was interesting based on the condition.
 
@@ -335,37 +349,51 @@ That’s it!
 
 ## Test your solution
 
-1. install and configure fsoc: https://github.com/cisco-open/fsoc
+1. install and configure fsoc: <https://github.com/cisco-open/fsoc>
 2. login (the identity that fsoc is configured with needs to have sufficient privileges for the below solution operations)
+
     ```shell
    fsoc login
    ```
+
 3. rename the solution in manifest.json
 4. check and validate the solution
+
    ```shell
    fsoc solution validate --tag=stable
    ```
+
 5. run local tests (see `tests/readme.md`)
 6. push the solution
+
    ```shell
    fsoc solution push --tag=stable
    ```
+
 7. subscribe to this solution
+
    ```shell
    fsoc solution subscribe sampleworkflow
    ```
+
 8. check that the metric type was created successfully by navigating to **Schema Browser**:
-   ```
+
+   ```url
    https://{your tenant}.observe.appdynamics.com/ui/cco/tools/melt/schema
-   ``` 
+   ```
+
    and searching for `healthrule.violation.count`
 9. check that metric is being populated by navigating to **Query Builder**:
-   ```
+
+   ```url
    https://{your tenant}.observe.appdynamics.com/ui/cco/tools/melt/query
-   ``` 
-   and pasting the following UQL query (update sampleworkflow to your new solution id):
    ```
+
+   and pasting the following UQL query (update sampleworkflow to your new solution id):
+
+   ```url
    SINCE now - 1h FETCH metrics('sampleworkflow:healthrule.violation.count') {timestamp, value} FROM entities(k8s:workload, apm:service)
    ```
+
    Note that you need to have either k8s or apm monitoring enabled, and at least one health rule violation needs to occur since solution subscription
-10. Alternatively, view the metrics by navigating to the metric explorer at *https://<your tenant>.observe.appdynamics.com/explore/cco/metric-explorer*
+10. Alternatively, view the metrics by navigating to the metric explorer at *https://{your tenant}.observe.appdynamics.com/explore/cco/metric-explorer*
