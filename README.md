@@ -3,6 +3,7 @@
 [![Lint](https://github.com/cisco-open/observability-examples/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/cisco-open/observability-examples/actions/workflows/lint.yml)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-fbab2c.svg)](CODE_OF_CONDUCT.md)
 [![Maintainer](https://img.shields.io/badge/Maintainer-Cisco-00bceb.svg)](https://opensource.cisco.com)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/cisco-open/observability-examples/badge)](https://securityscorecards.dev/viewer/?uri=github.com/cisco-open/observability-examples)
 
 Cisco Observability Platform is an extensible platform for all applications of
 observability. This repository contains examples of how to build solutions using
