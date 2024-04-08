@@ -1,23 +1,44 @@
-TOP_LEVEL=$(shell git rev-parse --show-toplevel)
+TOP_LEVEL := $(shell git rev-parse --show-toplevel)
 TOOLSDIR := $(TOP_LEVEL)/.tools
 ADDLICENSE := $(TOOLSDIR)/addlicense
 FSOC := $(TOOLSDIR)/fsoc
 FSOC_VERSION := 0.67.0
 ADDLICENSE_VERSION := 1.1.1
 
+# Detect OS and Architecture
+UNAME_S := $(shell uname -s)
+UNAME_M := $(shell uname -m)
+ifeq ($(UNAME_S),Darwin)
+	ifeq ($(UNAME_M),arm64)
+		# Apple Silicon Mac
+		ADDLICENSE_BINARY := addlicense_$(ADDLICENSE_VERSION)_macOS_arm64.tar.gz
+		FSOC_BINARY := fsoc-darwin-arm64.tar.gz
+	else
+		# Intel Mac
+		ADDLICENSE_BINARY := addlicense_$(ADDLICENSE_VERSION)_macOS_x86_64.tar.gz
+		FSOC_BINARY := fsoc-darwin-amd64.tar.gz
+	endif
+else ifeq ($(UNAME_S),Linux)
+	ifeq ($(UNAME_M),x86_64)
+		ADDLICENSE_BINARY := addlicense_$(ADDLICENSE_VERSION)_Linux_x86_64.tar.gz
+		FSOC_BINARY := fsoc-linux-amd64.tar.gz
+	else ifeq ($(UNAME_M),arm64)
+		ADDLICENSE_BINARY := addlicense_$(ADDLICENSE_VERSION)_Linux_arm64.tar.gz
+		FSOC_BINARY := fsoc-linux-arm64.tar.gz
+	endif
+endif
+
 $(ADDLICENSE):
 	mkdir -p $(TOOLSDIR)
-	wget https://github.com/google/addlicense/releases/download/v$(ADDLICENSE_VERSION)/addlicense_$(ADDLICENSE_VERSION)_Linux_x86_64.tar.gz
-	tar -xvf addlicense_$(ADDLICENSE_VERSION)_Linux_x86_64.tar.gz -C $(TOOLSDIR) addlicense
-	rm addlicense_$(ADDLICENSE_VERSION)_Linux_x86_64.tar.gz 
+	wget https://github.com/google/addlicense/releases/download/v$(ADDLICENSE_VERSION)/$(ADDLICENSE_BINARY)
+	tar -xvf $(ADDLICENSE_BINARY) -C $(TOOLSDIR) addlicense
+	rm $(ADDLICENSE_BINARY)
 
 $(FSOC):
 	mkdir -p $(TOOLSDIR)
-	wget https://github.com/cisco-open/fsoc/releases/download/v$(FSOC_VERSION)/fsoc-linux-amd64.tar.gz
-	tar -xvf fsoc-linux-amd64.tar.gz -C $(TOOLSDIR) fsoc-linux-amd64
-	mv $(TOOLSDIR)/fsoc-linux-amd64 $(TOOLSDIR)/fsoc
-	rm fsoc-linux-amd64.tar.gz 
-
+	wget https://github.com/cisco-open/fsoc/releases/download/v$(FSOC_VERSION)/$(FSOC_BINARY)
+	tar -xvf $(FSOC_BINARY) -C $(TOOLSDIR) fsoc
+	rm $(FSOC_BINARY)
 
 .PHONY: all
 all: lint test check-license
@@ -25,7 +46,7 @@ all: lint test check-license
 .PHONY: check-license
 check-license: $(ADDLICENSE)
 	@echo "verifying license headers"
-	$(TOOLSDIR)/addlicense -check .
+	$(ADDLICENSE) -check .
 
 .PHONY: add-license
 add-license: $(ADDLICENSE)
