@@ -42,7 +42,7 @@ $(FSOC):
 	rm $(FSOC_BINARY)
 
 .PHONY: all
-all: lint test check-license
+all: lint markdown-lint test check-license
 
 .PHONY: check-license
 check-license: $(ADDLICENSE)
@@ -55,7 +55,7 @@ add-license: $(ADDLICENSE)
 	$(ADDLICENSE) -s -v -c "Cisco Systems, Inc. and its affiliates" -l apache .
 
 .PHONY: lint
-lint: markdown-lint
+lint:
 
 .PHONY: markdown-lint
 markdown-lint:
