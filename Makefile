@@ -59,7 +59,6 @@ lint: markdown-lint
 
 .PHONY: markdown-lint
 markdown-lint:
-	$(MDLINT)
 	markdownlint $(TOP_LEVEL)/**/*.md
 
 .PHONY: test
