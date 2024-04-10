@@ -12,7 +12,6 @@ You will learn:
 4. How to query for your Type, and actual knowledge objects
 5. How to apply access control to your knowledge model
 
-
 The `package` folder contains the solution structure.
 
 ```text
@@ -47,11 +46,9 @@ run the `checkFSOC.sh`script to verify you have a recent version of the COP CLI
 ./checkFSOC.sh
 ```
 
-
 run the `fork.sh`script. It will copy the solution `package` folder into a new
 solution folder prefixed with your username. There are also several file in the
 solution where your username will be injected.
-
 
 ```text
 .
@@ -91,7 +88,9 @@ You now have a solution manifest file
   "manifestVersion": "1.1.0",
   "name": "SOLUTION_PREFIXmalwareexample",
   "solutionVersion": "1.0.1",
-  "dependencies": ["iam"],
+  "dependencies": [
+    "iam"
+  ],
   "description": "network intrusion investigation",
   "contact": "-",
   "homepage": "-",
@@ -100,7 +99,7 @@ You now have a solution manifest file
   "types": [
     "types/investigation.json"
   ],
-  "objects":[
+  "objects": [
     {
       "type": "SOLUTION_PREFIXmalwareexample:investigation",
       "objectsFile": "objects/malwareInvestigationDefaults.json"
@@ -117,7 +116,6 @@ You now have a solution manifest file
 }
 ```
 
-
 Let's look at the investigation Type definition.
 
 ```shell
@@ -131,7 +129,8 @@ cat investigation.json
     "TENANT"
   ],
   "identifyingProperties": [
-    "/name","/caseID"
+    "/name",
+    "/caseID"
   ],
   "jsonSchema": {
     "$schema": "http://json-schema.org/draft-07/schema#",
@@ -162,7 +161,11 @@ cat investigation.json
       },
       "severity": {
         "type": "string",
-        "enum": ["low", "medium", "high"]
+        "enum": [
+          "low",
+          "medium",
+          "high"
+        ]
       },
       "intrusionType": {
         "type": "string"
@@ -207,7 +210,11 @@ cat investigation.json
       },
       "status": {
         "type": "string",
-        "enum": ["open", "closed", "in progress"]
+        "enum": [
+          "open",
+          "closed",
+          "in progress"
+        ]
       },
       "notes": {
         "type": "string"
@@ -253,7 +260,14 @@ cat investigation.json
         "type": "string"
       }
     },
-    "required": ["name", "caseID", "investigators", "startTime", "description", "status"]
+    "required": [
+      "name",
+      "caseID",
+      "investigators",
+      "startTime",
+      "description",
+      "status"
+    ]
   }
 }
 ```
@@ -261,29 +275,34 @@ cat investigation.json
 A Type declaration has these parts:
 
 * `name` - the name field is fine. It is set to 'investigation'. When we push
-this solution, it means that tenants who subscribe to your solution (inlcuding
-you!) will be able to access a totally new knowledge type. You can think of  a
-type as similar to a table in a traditional database
+  this solution, it means that tenants who subscribe to your solution (inlcuding
+  you!) will be able to access a totally new knowledge type. You can think of a
+  type as similar to a table in a traditional database
 * `allowedLayers` - The knowledge store allows `SOLUTION`, `TENANT`, and `USER`
-access. Objects placed in solution packages, are replicated to all Cells in the
-COP. Default knowledge layering policies make your SOLUTION objects visible to
-TENANT and USER principals in every cell. To illustrate how layering works, in
-this example we wish to include an object with suitable defaults for network
-intrusion investigations.  However, we want tenant admin to be able to customize
-investigation defaults which may have different requirements in different
-regions. For this reason we set `allowdLayers` to `TENANT` in the investigation
-type definitoin, `investigation.json`. However, we also want to allow USERs to
-create investigations within a tenant, and to see the tenant-specific defaults
-that are applicable to, for example European Union. For this reason we add USER
-to the `allowedLayers`
+  access. Objects placed in solution packages, are replicated to all Cells in
+  the
+  COP. Default knowledge layering policies make your SOLUTION objects visible to
+  TENANT and USER principals in every cell. To illustrate how layering works, in
+  this example we wish to include an object with suitable defaults for network
+  intrusion investigations. However, we want tenant admin to be able to
+  customize
+  investigation defaults which may have different requirements in different
+  regions. For this reason we set `allowdLayers` to `TENANT` in the
+  investigation
+  type definitoin, `investigation.json`. However, we also want to allow USERs to
+  create investigations within a tenant, and to see the tenant-specific defaults
+  that are applicable to, for example European Union. For this reason we add
+  USER
+  to the `allowedLayers`
   ![Layering](https://raw.githubusercontent.com/geoffhendrey/cop-examples/main/assets/knowledge%20replication.png)
 * `identifyingProperties` - When we store an actual investigation object,
-whether it is coming from a solution package as we will do, or a user or UI via
-an API call, the Knowledge Store must have a way to uniquely identify the
-object. `identifyingProperties` is a JSON Pointer that tells the system which
-field of an ingvestigation object can be used to uniquely identify it. We will
-be changing the identifyingProperties from
- `["/name"]` to `["/name", "/caseID"]`
+  whether it is coming from a solution package as we will do, or a user or UI
+  via
+  an API call, the Knowledge Store must have a way to uniquely identify the
+  object. `identifyingProperties` is a JSON Pointer that tells the system which
+  field of an ingvestigation object can be used to uniquely identify it. We will
+  be changing the identifyingProperties from
+  `["/name"]` to `["/name", "/caseID"]`
 
 ```shell
 
@@ -311,9 +330,9 @@ you will see that one of the lines printed to the terminal is
 This means the `fsoc` command is making a REST call to list all objects of with
 fully qualified type `extensibility:solution`
 
-
 ```html
-https://<your-tenant-hostname>/knowledge-store/v1/objects/extensibility:solution
+https://
+<your-tenant-hostname>/knowledge-store/v1/objects/extensibility:solution
 ```
 
 In the API call above, `extensibility:solution` is a fully qualifed type. We can
@@ -322,19 +341,17 @@ Solution called `extensibility` that has defined a Type called `solution`, in
 which it stores details about every solution that has been pushed to the
 platform.
 
-
 Recall that the name of your solution is `$SOLUTION_PREFIXmalwareexample`. This
 means tht the fully qualifed name of your investigation Type is:
-
 
 ```shell
 $SOLUTION_PREFIXmalwareexample:investigation`
 ```
 
 * `jsonSchema` - this is where we need to define our type's json document
-structure. As you can see from the JSON below, the json schema for the
-investigation contains numerous fields ranging from the identifying property
-(`caseID`) to `description`, `severity`, and `affectedSystems`
+  structure. As you can see from the JSON below, the json schema for the
+  investigation contains numerous fields ranging from the identifying property
+  (`caseID`) to `description`, `severity`, and `affectedSystems`
 
 Let's now examine the  `malwareInvestigationDefaults.json` object. The first
 thing to note is that it complies with the JSON schema for `investigation`
@@ -343,21 +360,31 @@ thing to note is that it complies with the JSON schema for `investigation`
 {
   "name": "Malware Incident Report",
   "caseID": "MAL2023123456",
-  "investigators": ["Security Team"],
+  "investigators": [
+    "Security Team"
+  ],
   "startTime": "2023-12-15T10:00:00Z",
   "endTime": "2023-12-15T11:30:00Z",
   "description": "Investigation of a suspected malware infection on a workstation.",
   "severity": "high",
   "intrusionType": "Malware",
-  "affectedSystems": ["Workstation-1"],
-  "attackVectors": ["Email attachment", "Drive-by download"],
+  "affectedSystems": [
+    "Workstation-1"
+  ],
+  "attackVectors": [
+    "Email attachment",
+    "Drive-by download"
+  ],
   "ipAddresses": {
     "source": "192.168.1.50",
     "target": "104.20.2.17"
   },
   "networkTrafficLogs": "Unusual network activity detected on the workstation.",
   "incidentResponseActions": "Isolated the workstation from the network, initiated malware scan.",
-  "evidenceAndArtifacts": ["Malware executable", "Suspicious email"],
+  "evidenceAndArtifacts": [
+    "Malware executable",
+    "Suspicious email"
+  ],
   "recommendations": "Implement email filtering and endpoint protection measures.",
   "status": "open",
   "notes": "The affected workstation has been isolated and is undergoing analysis.",
@@ -368,7 +395,9 @@ thing to note is that it complies with the JSON schema for `investigation`
   "reporting": "Internal incident reporting",
   "incidentClassification": "Malware Infection",
   "legalAndCompliance": "Compliance with data protection regulations",
-  "affectedUsers": ["User-C"],
+  "affectedUsers": [
+    "User-C"
+  ],
   "evidencePreservation": "Evidence preserved according to security policy.",
   "thirdPartyInvolvement": "Consulted with cybersecurity experts.",
   "remediationActions": "Cleaned malware, implemented preventive measures.",
@@ -431,107 +460,107 @@ fsoc knowledge get-type --type "USERNAMEmalwareexample:investigation"
 
 ```yaml
 allowedLayers:
-    - SOLUTION
-    - TENANT
+  - SOLUTION
+  - TENANT
 createdAt: "2024-01-19T20:54:14.757Z"
 identifyingProperties:
-    - /name
-    - /caseID
+  - /name
+  - /caseID
 jsonSchema:
-    $schema: http://json-schema.org/draft-07/schema#
-    properties:
-        affectedSystems:
-            items:
-                type: string
-            type: array
-        affectedUsers:
-            items:
-                type: string
-            type: array
-        attackVectors:
-            items:
-                type: string
-            type: array
-        caseID:
-            type: string
-        description:
-            type: string
-        endTime:
-            format: date-time
-            type: string
-        evidenceAndArtifacts:
-            items:
-                type: string
-            type: array
-        evidencePreservation:
-            type: string
-        incidentClassification:
-            type: string
-        incidentResponseActions:
-            type: string
-        intrusionType:
-            type: string
-        investigators:
-            items:
-                type: string
-            type: array
-        ipAddresses:
-            properties:
-                source:
-                    type: string
-                target:
-                    type: string
-            type: object
-        legalAndCompliance:
-            type: string
-        lessonsLearned:
-            type: string
-        name:
-            type: string
-        networkTrafficLogs:
-            type: string
-        notes:
-            type: string
-        recommendations:
-            type: string
-        remediationActions:
-            type: string
-        reporting:
-            type: string
-        severity:
-            enum:
-                - low
-                - medium
-                - high
-            type: string
-        startTime:
-            format: date-time
-            type: string
-        status:
-            enum:
-                - open
-                - closed
-                - in progress
-            type: string
-        thirdPartyInvolvement:
-            type: string
-        timestamps:
-            properties:
-                end:
-                    format: date-time
-                    type: string
-                start:
-                    format: date-time
-                    type: string
-            type: object
-    required:
-        - name
-        - caseID
-        - investigators
-        - startTime
-        - description
-        - status
-    type: object
+  $schema: http://json-schema.org/draft-07/schema#
+  properties:
+    affectedSystems:
+      items:
+        type: string
+      type: array
+    affectedUsers:
+      items:
+        type: string
+      type: array
+    attackVectors:
+      items:
+        type: string
+      type: array
+    caseID:
+      type: string
+    description:
+      type: string
+    endTime:
+      format: date-time
+      type: string
+    evidenceAndArtifacts:
+      items:
+        type: string
+      type: array
+    evidencePreservation:
+      type: string
+    incidentClassification:
+      type: string
+    incidentResponseActions:
+      type: string
+    intrusionType:
+      type: string
+    investigators:
+      items:
+        type: string
+      type: array
+    ipAddresses:
+      properties:
+        source:
+          type: string
+        target:
+          type: string
+      type: object
+    legalAndCompliance:
+      type: string
+    lessonsLearned:
+      type: string
+    name:
+      type: string
+    networkTrafficLogs:
+      type: string
+    notes:
+      type: string
+    recommendations:
+      type: string
+    remediationActions:
+      type: string
+    reporting:
+      type: string
+    severity:
+      enum:
+        - low
+        - medium
+        - high
+      type: string
+    startTime:
+      format: date-time
+      type: string
+    status:
+      enum:
+        - open
+        - closed
+        - in progress
+      type: string
+    thirdPartyInvolvement:
+      type: string
+    timestamps:
+      properties:
+        end:
+          format: date-time
+          type: string
+        start:
+          format: date-time
+          type: string
+      type: object
+  required:
+    - name
+    - caseID
+    - investigators
+    - startTime
+    - description
+    - status
+  type: object
 name: investigation
 solution: ghendreymalwareexample
 updatedAt: "2024-01-19T20:54:14.757Z"
@@ -600,6 +629,7 @@ patch: null
 targetObjectId: null
 
 ```
+
 Note, if you want to query all existing investigations, lust leave off the
 `--objectID` (as usual, USERNAME is your username). This query returns a page of
 objects.
@@ -619,20 +649,20 @@ Here is `permissions.json`
 
 ```json
   {
-    "name": "readMalwareInvestigation",
-    "displayName": "SOLUTION_PREFIXmalwareexample:readMalwareInvestigation",
-    "description": "Read Malware Investigation",
-    "actionAndResources": [
-      {
-        "action": {
-          "classification": "READ"
-        },
-        "resource": {
-          "type": "SOLUTION_PREFIXmalwareexample:investigation"
-        }
+  "name": "readMalwareInvestigation",
+  "displayName": "SOLUTION_PREFIXmalwareexample:readMalwareInvestigation",
+  "description": "Read Malware Investigation",
+  "actionAndResources": [
+    {
+      "action": {
+        "classification": "READ"
+      },
+      "resource": {
+        "type": "SOLUTION_PREFIXmalwareexample:investigation"
       }
-    ]
-  }
+    }
+  ]
+}
 ```
 
 Here is `role-to-permission-mappings.json`

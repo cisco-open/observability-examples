@@ -1,8 +1,8 @@
 {
   "manifestVersion": "1.1.0",
   "name": "SOLUTION_PREFIXawscreds",
-  "solutionVersion": "1.0.8",
-  "dependencies": ["iam"],
+  "solutionVersion": "1.0.9",
+  "dependencies": ["iam", "zodiac"],
   "description": "aws credentials solution",
   "contact": "-",
   "homepage": "-",

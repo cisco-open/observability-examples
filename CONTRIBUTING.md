@@ -30,6 +30,8 @@ has been discussed in the past, or if the change was already implemented but not
 We expect new pull requests to include tests for any affected behavior, and, as we follow semantic versioning, we may
 reserve breaking changes until the next major version release.
 
+**Note**: make sure you [set up commit verification on github](https://docs.github.com/en/authentication/managing-commit-signature-verification/about-commit-signature-verification#gpg-commit-signature-verification).
+
 ## Other Ways to Contribute
 
 We welcome anyone that wants to contribute to `observability-examples` to triage and reply to open issues to help troubleshoot

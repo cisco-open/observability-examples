@@ -18,6 +18,7 @@ ifeq ($(UNAME_S),Darwin)
 		ADDLICENSE_BINARY := addlicense_$(ADDLICENSE_VERSION)_macOS_x86_64.tar.gz
 		FSOC_BINARY := fsoc-darwin-amd64.tar.gz
 	endif
+	MDLINT := brew list markdownlint-cli || brew install markdownlint-cli
 else ifeq ($(UNAME_S),Linux)
 	ifeq ($(UNAME_M),x86_64)
 		ADDLICENSE_BINARY := addlicense_$(ADDLICENSE_VERSION)_Linux_x86_64.tar.gz
@@ -46,7 +47,7 @@ all: lint test check-license
 .PHONY: check-license
 check-license: $(ADDLICENSE)
 	@echo "verifying license headers"
-	$(ADDLICENSE) -check .
+	$(ADDLICENSE) -ignore .git --ignore .idea -check .
 
 .PHONY: add-license
 add-license: $(ADDLICENSE)
@@ -54,8 +55,12 @@ add-license: $(ADDLICENSE)
 	$(ADDLICENSE) -s -v -c "Cisco Systems, Inc. and its affiliates" -l apache .
 
 .PHONY: lint
-lint:
-	@echo "linting placeholder"
+lint: markdown-lint
+
+.PHONY: markdown-lint
+markdown-lint:
+	$(MDLINT)
+	markdownlint $(TOP_LEVEL)/**/*.md
 
 .PHONY: test
 test:
