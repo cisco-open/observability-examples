@@ -47,7 +47,7 @@ all: lint markdown-lint test check-license
 .PHONY: check-license
 check-license: $(ADDLICENSE)
 	@echo "verifying license headers"
-	$(ADDLICENSE) -ignore .git --ignore .idea -check .
+	$(ADDLICENSE) -v -check .
 
 .PHONY: add-license
 add-license: $(ADDLICENSE)
@@ -59,7 +59,7 @@ lint:
 
 .PHONY: markdown-lint
 markdown-lint:
-	markdownlint $(TOP_LEVEL)/**/*.md
+	markdownlint *.md **/*.md .github/**/*.md
 
 .PHONY: test
 test:
