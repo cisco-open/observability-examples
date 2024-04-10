@@ -18,6 +18,7 @@ ifeq ($(UNAME_S),Darwin)
 		ADDLICENSE_BINARY := addlicense_$(ADDLICENSE_VERSION)_macOS_x86_64.tar.gz
 		FSOC_BINARY := fsoc-darwin-amd64.tar.gz
 	endif
+	MDLINT := brew list markdownlint-cli || brew install markdownlint-cli
 else ifeq ($(UNAME_S),Linux)
 	ifeq ($(UNAME_M),x86_64)
 		ADDLICENSE_BINARY := addlicense_$(ADDLICENSE_VERSION)_Linux_x86_64.tar.gz
@@ -41,12 +42,12 @@ $(FSOC):
 	rm $(FSOC_BINARY)
 
 .PHONY: all
-all: lint test check-license
+all: lint markdown-lint test check-license
 
 .PHONY: check-license
 check-license: $(ADDLICENSE)
 	@echo "verifying license headers"
-	$(ADDLICENSE) -check .
+	$(ADDLICENSE) -ignore .git --ignore .idea -check .
 
 .PHONY: add-license
 add-license: $(ADDLICENSE)
@@ -55,7 +56,10 @@ add-license: $(ADDLICENSE)
 
 .PHONY: lint
 lint:
-	@echo "linting placeholder"
+
+.PHONY: markdown-lint
+markdown-lint:
+	markdownlint $(TOP_LEVEL)/**/*.md
 
 .PHONY: test
 test:
