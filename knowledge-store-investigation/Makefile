@@ -1,4 +1,4 @@
-.PHONY: fork validate
+.PHONY: validate
 
 # Define a default goal.
 default: test
@@ -13,7 +13,7 @@ fork:
 # Validate target to check solution files are correct.
 validate:
 	@echo "Validating solution..."
-	./validate.sh
+	./validatePackage.sh
 	@echo "Solution validated."
 
 # Push target to deploy your solution.
@@ -23,7 +23,7 @@ push:
 	@echo "Solution pushed."
 
 # Test target that runs fork, validate, and push.
-test: fork validate
+test: validate
 	@echo "All tests and deployments have been successfully executed."
 
 # Custom test target if you have a specific script for testing.

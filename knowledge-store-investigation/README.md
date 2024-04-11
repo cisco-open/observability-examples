@@ -46,16 +46,18 @@ run the `checkFSOC.sh`script to verify you have a recent version of the COP CLI
 ./checkFSOC.sh
 ```
 
-run the `fork.sh`script. It will copy the solution `package` folder into a new
-solution folder prefixed with your username. There are also several file in the
-solution where your username will be injected.
+run the `fork.sh`script. It will run the `fsoc solution fork` command which
+downloads the authoritative version of package from the platfom, and creates
+a local copy of it prefixed with your username. So if your local username is
+'fred', fork.sh will make a local folder named `fredmalware`. All of the commands
+apply a platform tag called 'base' to your fork. 
 
 ```text
 .
 ├── README.md
 ├── checkFSOC.sh
 ├── fork.sh
-├── <USERNAME>malwareexample
+├── ${USER}malware
 │   ├── manifest.json
 │   ├── objects
 │   │   ├── malwareInvestigationDefaults.json
@@ -72,25 +74,22 @@ solution where your username will be injected.
 │   └── types
 │       └── investigation.json
 ├── push.sh
-├── setSolutionPrefix.sh
 ├── status.sh
 └── validate.sh
 ```
 
-Verify you have a folder whose name is `<your-username>malwareexample`
+Verify you have a folder whose name is `${USER}malware`
 
 You now have a solution manifest file
-`<your-username>malwareexample/manifest.json` that looks like this, with
-`$SOLUTION_PREFIX` replaced by your username:
+`${USER}malware/manifest.json` that looks like this, except the
+solution's name field will look like `fredmalware` if `fred` is your username.
 
 ```json
 {
   "manifestVersion": "1.1.0",
-  "name": "SOLUTION_PREFIXmalwareexample",
-  "solutionVersion": "1.0.1",
-  "dependencies": [
-    "iam"
-  ],
+  "name": "malwareexample",
+  "solutionVersion": "1.0.4",
+  "dependencies": ["iam"],
   "description": "network intrusion investigation",
   "contact": "-",
   "homepage": "-",
@@ -99,9 +98,9 @@ You now have a solution manifest file
   "types": [
     "types/investigation.json"
   ],
-  "objects": [
+  "objects":[
     {
-      "type": "SOLUTION_PREFIXmalwareexample:investigation",
+      "type": "@INSTALL ${$sys.solutionId & ':investigation'}",
       "objectsFile": "objects/malwareInvestigationDefaults.json"
     },
     {
@@ -114,6 +113,7 @@ You now have a solution manifest file
     }
   ]
 }
+
 ```
 
 Let's look at the investigation Type definition.
@@ -341,11 +341,12 @@ Solution called `extensibility` that has defined a Type called `solution`, in
 which it stores details about every solution that has been pushed to the
 platform.
 
-Recall that the name of your solution is `$SOLUTION_PREFIXmalwareexample`. This
-means tht the fully qualifed name of your investigation Type is:
+Recall that the name of your solution is `${USER}malware`. This
+means tht the fully qualified name of your investigation Type is something like
+`fredmalware` or more generally:
 
 ```shell
-$SOLUTION_PREFIXmalwareexample:investigation`
+<username>malware:investigation
 ```
 
 * `jsonSchema` - this is where we need to define our type's json document
@@ -422,17 +423,17 @@ Run the `push.sh` script.
 The script uses the `fsoc` command like this:
 
 ```shell
-GHENDREY-M-NWK4:ghendreymalwareexample ghendrey$ fsoc solution push --stable
-Creating solution zip: "/var/folders/_h/gk53dw4j4vx9k0zjtpy_k3wm0000gn/T/ghendreymalwareexample3885208973.zip"
-Deploying solution ghendreymalwareexample version 1.0.0 with tag stable
-   • Current token is no longer valid; trying to refresh
-Successfully uploaded solution ghendreymalwareexample version 1.0.0 with tag stable.
+GHENDREY-M-NWK4:knowledge-store-investigation ghendrey$ ./push.sh
+Creating solution zip: "/var/folders/_h/gk53dw4j4vx9k0zjtpy_k3wm0000gn/T/ghendreymalware308006586.zip"
+Deploying solution ghendreymalware version 1.0.4 with tag base
+Successfully uploaded solution ghendreymalware version 1.0.4 with tag base.
 ```
 
-Subscribe to your solution
+Subscribe to your solution. Note that you must provide the name of the tag
+that you wish to subscribe to.
 
 ```shell
-fsoc solution subscribe <USERNAME>malwareexample
+fsoc solution subscribe ${USER}malware --tag=base
 ```
 
 Check the status of your subscription using the included `status.sh`:
@@ -440,12 +441,12 @@ Check the status of your subscription using the included `status.sh`:
 ```shell
 GHENDREY-M-NWK4:knowledge-store-investigation ghendrey$ ./status.sh
 SOLUTION_PREFIX set to: ghendrey
-                       Solution Name: ghendreymalwareexample
+                       Solution Name: ghendreymalware
         Solution Subscription Status: Subscribed
-     Current Solution Upload Version: 1.0.1
+     Current Solution Upload Version: 1.0.4
    Current Solution Upload Timestamp: 2024-01-19T04:25:40.187Z
-     Last Successful Install Version: 1.0.1
-    Current Solution Install Version: 1.0.1
+     Last Successful Install Version: 1.0.4
+    Current Solution Install Version: 1.0.4
 Current Solution Install Successful?: true
        Current Solution Install Time: 2024-01-19T20:54:14.415Z
     Current Solution Install Message:
@@ -455,7 +456,7 @@ Query the Type definition for investigation. Be sure to replace your username in
 the fsoc command below :
 
 ```shell
-fsoc knowledge get-type --type "USERNAMEmalwareexample:investigation" 
+fsoc knowledge get-type --type ${USER}malware:investigation
 ```
 
 ```yaml
@@ -575,7 +576,7 @@ verify it is in the store. In the fsoc command below, be sure to replace
 USERNAME with your username.
 
 ```shell
-fsoc  knowledge get --layer-type=SOLUTION  --type=USERNAMEmalwareexample:investigation  --layer-id=USERNAMEmalwareexample --object-id='USERNAMEmalwareexample:/name=Malware Incident Report;/caseID=Example:00000'
+fsoc  knowledge get --layer-type=SOLUTION  --type=${USER}malware:investigation  --layer-id=${USER}malware --object-id='${USER}malware:/name=Malware Incident Report;/caseID=Example:00000'
 ```
 
 In the response, note that your object is contained in the `data` field
@@ -635,7 +636,7 @@ Note, if you want to query all existing investigations, lust leave off the
 objects.
 
 ```shell
-fsoc  knowledge get --layer-type=SOLUTION  --type=USERNAMEmalwareexample:investigation  --layer-id=USERNAMEmalwareexample
+fsoc  knowledge get --layer-type=SOLUTION  --type=${USER}malware:investigation  --layer-id=${USER}malware
 ```
 
 The Cisco Observability Platform contains several built-in roles. This example
@@ -645,24 +646,30 @@ investigation Type. The solution includes `permissions.json` and
 script, SOLUTION_PREFIX has been replaced with your username from your local
 operating system.
 
-Here is `permissions.json`
+Here is `permissions.json`. Note the use of
+[Stated](https://github.com/cisco-open/stated) templates to dynamically 
+generate certain fields. Variables like `sys.solutionId` incorporate your
+tag. By using Stated templates, you do not have to edit your solution files
+when you want to push a new tag of your solution. 
 
 ```json
+  [
   {
-  "name": "readMalwareInvestigation",
-  "displayName": "SOLUTION_PREFIXmalwareexample:readMalwareInvestigation",
-  "description": "Read Malware Investigation",
-  "actionAndResources": [
-    {
-      "action": {
-        "classification": "READ"
-      },
-      "resource": {
-        "type": "SOLUTION_PREFIXmalwareexample:investigation"
+    "name": "readMalwareInvestigation",
+    "displayName": "@INSTALL ${$sys.solutionId & ':readMalwareInvestigation'}",
+    "description": "Read Malware Investigation",
+    "actionAndResources": [
+      {
+        "action": {
+          "classification": "READ"
+        },
+        "resource": {
+          "type": "@INSTALL ${$sys.solutionId & ':investigation'}"
+        }
       }
-    }
-  ]
-}
+    ]
+  }
+]
 ```
 
 Here is `role-to-permission-mappings.json`
@@ -677,7 +684,7 @@ Here is `role-to-permission-mappings.json`
   ],
   "permissions": [
     {
-      "id": "SOLUTION_PREFIXmalwareexample:readMalwareInvestigation"
+      "id": "@INSTALL ${$sys.solutionId & ':readMalwareInvestigation'}"
     }
   ]
 }

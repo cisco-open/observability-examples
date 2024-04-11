@@ -1,7 +1,7 @@
 {
   "manifestVersion": "1.1.0",
-  "name": "SOLUTION_PREFIXmalwareexample",
-  "solutionVersion": "1.0.2",
+  "name": "malwareexample",
+  "solutionVersion": "1.0.4",
   "dependencies": ["iam"],
   "description": "network intrusion investigation",
   "contact": "-",
