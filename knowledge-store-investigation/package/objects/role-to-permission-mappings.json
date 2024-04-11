@@ -7,7 +7,7 @@
   ],
   "permissions": [
     {
-      "id": "SOLUTION_PREFIXmalwareexample:readMalwareInvestigation"
+      "id": "@INSTALL ${$sys.solutionId & ':readMalwareInvestigation'}"
     }
   ]
 }
