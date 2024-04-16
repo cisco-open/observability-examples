@@ -4,7 +4,7 @@ SOLUTION_NAME := ${USER}awscreds
 default: test
 
 # Validate target to check solution files are correct.
-fork:
+fork: clean
 	@echo "forking solution..."
 	fsoc solution fork --source-dir=package ${SOLUTION_NAME} --verbose
 	@echo "Solution forked."
@@ -12,7 +12,7 @@ fork:
 
 # Validate target to check solution files are correct.
 .PHONY: validate
-validate:
+validate: fork
 	@echo "Validating solution..."
 	fsoc solution validate --directory ${SOLUTION_NAME} --tag=base -v
 	@echo "Solution validated."
@@ -46,7 +46,7 @@ markdown-lint:
 	@echo "Completed markdown lint."
 
 # Test which require fsoc tenant set up
-integration_test: clean fork validate
+integration_test: validate
 	@echo "Running integration tests..."
 	@test -d ./"${SOLUTION_NAME}" && rm -r ./"${SOLUTION_NAME}" || echo "nothing to clean"
 	@echo "Completed integration tests."
