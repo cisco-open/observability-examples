@@ -16,4 +16,4 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
-fsoc solution fork malwareexample ${USER}malware --tag=base --verbose
+fsoc solution fork --source-dir=package ${USER}malware --verbose

@@ -16,4 +16,4 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
-fsoc solution push --directory ${USER}malware --wait --tag=base
+fsoc solution push --directory ${USER}malware --wait --tag=base -v
