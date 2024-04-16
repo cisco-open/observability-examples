@@ -148,11 +148,11 @@ folder and deploying it to the platform.
    waiting for the solution version to be
    installed.
 6. **Subscribe your tenant to the solution**: `fsoc solution subscribe ${USER}awscreds --tag=base`
-6. **Verify Deployment**: Utilize `fsoc solution status ${USER}malware --tag=base` to check the status of your
+7. **Verify Deployment**: Utilize `fsoc solution status ${USER}malware --tag=base` to check the status of your
    solution deployment. Ensure that the
    solution name matches your `${USER}awscreds` and that the installation was
    successful.
-7. **Add AWS Credentials Object**: Use the command below to add a knowledge
+8.**Add AWS Credentials Object**: Use the command below to add a knowledge
    object for your AWS Credentials. The
    provided `awscredsexample.json` file contains an example of the knowledge
    object you will create.

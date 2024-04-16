@@ -315,9 +315,9 @@ A Type declaration has these parts:
 ```
 
 Let's briefly discuss how the
-Knowledge Store REST APIs leverage object _identity_. Consider that two
+Knowledge Store REST APIs leverage object __identity__. Consider that two
 solutions can both create a type called investigation. This clash is resolved by
-using _fully qualified_ id's. For example, try this command to list solutions
+using __fully qualified__ id's. For example, try this command to list solutions
 in your cell:
 
 ```shell
