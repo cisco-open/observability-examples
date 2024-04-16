@@ -57,9 +57,15 @@ Platform.
 Follow [fsoc cli installation guide](https://github.com/cisco-open/fsoc) to
 install the FSOC CLI.
 
-**Check FSOC CLI Installation**: Run the `./checkFSOC.sh` script to verify you
-have a recent version of the FSOC CLI
-installed.
+**Check FSOC CLI Installation and version**: 
+```shell
+fsoc version
+```
+
+if you need to upgrade to the newer fsoc version,
+follow [fsoc installation doc](https://github.com/cisco-open/fsoc).
+
+
 
 ## Configure FSOC CLI
 
@@ -124,29 +130,27 @@ isolation. The following scripts help to create a uniquely named soluition from
 the template located in the `package`
 folder and deploying it to the platform.
 
-1. **Fork the Solution from the template**: Execute `./fork.sh` to create a copy
+1. **Fork the Solution from the template**: Execute `fsoc solution fork --source-dir=package ${USER}awscreds -v` to create a copy
    of the solution `package` prefixed with
    your username. This process will also update various files within the
    solution with your username, preparing it for a
    personalized deployment.
-2. **Check your solution**: Your solution folder, named `<USERNAME>awscreds`,
-   contains the `manifest.json` file. Ensure
-   your username replaces `SOLUTION_PREFIX` in the manifest file, setting the
-   solution's name to your unique identifier.
+2. **Check your solution**: The fork command creates your solution folder named `${USER}awscreds`.
 3. **Define the Knowledge Type**: Review
-   the `<USERNAME>awscreds/types/awscreds.json` directory. This file defines the
+   the `${USER}awscreds/types/awscreds.json` directory. This file defines the
    data type for securely storing database credentials within the Knowledge
    Store.
-4. **Validate Your Solution**: Run `./validate.sh` to check for any errors in
+4. **Validate Your Solution**: Run `fsoc solution validate --directory ${USER}awscreds --tag=base -v` to check for any errors in
    your solution package.
-5. **Deploy and Subscribe to the Solution**: Execute `./push.sh` to deploy your
+5. **Deploy and Subscribe to the Solution**: Execute `fsoc solution push --directory ${USER}awscreds --tag=base` to deploy your
    solution to the Cisco Observability
    Platform. This script uses the FSOC CLI for deployment, subscription and
    waiting for the solution version to be
    installed.
-6. **Verify Deployment**: Utilize `./status.sh` to check the status of your
+6. **Subscribe your tenant to the solution**: `fsoc solution subscribe ${USER}awscreds --tag=base`
+6. **Verify Deployment**: Utilize `fsoc solution status ${USER}malware --tag=base` to check the status of your
    solution deployment. Ensure that the
-   solution name matches your `<USERNAME>awscreds` and that the installation was
+   solution name matches your `${USER}awscreds` and that the installation was
    successful.
 7. **Add AWS Credentials Object**: Use the command below to add a knowledge
    object for your AWS Credentials. The
@@ -155,9 +159,9 @@ folder and deploying it to the platform.
 
     ```shell
     fsoc knowledge create \ 
-      --type=<USERNAME>awscreds:awscreds \
+      --type=${USER}awscreds.base:awscreds \
       --layer-type=TENANT \ 
-      --object-file=objects/example/awscredsexample.json
+      --object-file=${USER}awscreds/objects/example/awscredsexample.json
     ```
 
 ## Building your Zodiac function
@@ -188,7 +192,7 @@ credentials.
 
    ```json
    {
-     "name": "SOLUTION_PREFIXawscreds-func",
+     "name": "awscreds-func",
      "image": "registry.hub.docker.com/zhirafovod/aws-service-demo:0.0.1",
      "scaleBounds": {
         "lower": 1,
@@ -206,7 +210,7 @@ credentials.
    your knowledge type:
 
     ```shell
-    fsoc knowledge get-type --type "<USERNAME>awscreds:awscreds"
+    fsoc knowledge get-type --type "${USER}awscreds.base:awscreds"
     ```
 
 2. **Create new Knowledge Object**: Add a new knowledge object for your database
@@ -214,9 +218,9 @@ credentials.
    the `fsoc knowledge create` command.
 
    ```shell
-    fsoc knowledge create --type=<USERNAME>awscreds:awscreds \ 
+    fsoc knowledge create --type=${USER}awscreds.base:awscreds \ 
       --layer-type=TENANT \ 
-      --object-file=<USERNAME>awscreds/objects/example/awscredsexample.json
+      --object-file=${USER}awscreds/objects/example/awscredsexample.json
     ```
 
    This will create a new knowledge object for your AWS Credentials.
@@ -225,7 +229,7 @@ credentials.
    knowledge object you created.
 
    ```shell
-   fsoc knowledge get --type=<USERNAME>awscreds:awscreds \ 
+   fsoc knowledge get --type=${USER}awscreds.base:awscreds \ 
      --layer-type=TENANT --object-id=MY_AWS_ACCESS_KEY_ID
    
    createdAt: "2024-02-16T01:38:57.800Z"
@@ -237,7 +241,7 @@ credentials.
    layerId: 2d4866c4-0a45-41ec-a534-011e5f4d970a
    layerType: TENANT
    objectMimeType: application/json
-   objectType: <USERNAME>awscreds:awscreds
+   objectType: ${USER}awscreds.base:awscreds
    patch: null
    targetObjectId: null
    updatedAt: "2024-02-16T01:38:57.800Z"
@@ -257,10 +261,10 @@ credentials.
    ```shell
    FSO_URL=https://<tenant>.saas.appd-test.com/rest/
    export TOKEN=`yq '.contexts[0].token' ~/.fsoc` ; curl -X POST -d \ 
-     '{"id": "<USERNAME>awscreds:awscreds/MY_AWS_ACCESS_KEY_ID"}' \ 
+     '{"id": "${USER}awscreds.base:awscreds/MY_AWS_ACCESS_KEY_ID"}' \ 
      --header "Authorization: Bearer $TOKEN" \ 
      -H 'Content-Type: application/json' \ 
-     $FSO_URL/<USERNAME>awscreds/<USERNAME>awscreds-func -s | jq
+     $FSO_URL/${USER}awscreds/${USER}awscreds-func -s | jq
    {
    "layerType": "TENANT",
    "id": "MY_AWS_ACCESS_KEY_ID",
@@ -275,7 +279,7 @@ credentials.
    "patch": null,
    "createdAt": "2024-02-16T01:38:57.800Z",
    "updatedAt": "2024-02-16T01:38:57.800Z",
-   "objectType": "<USERNAME>awscreds:awscreds"
+   "objectType": "${USER}awscreds.base:awscreds"
    }
    ```
 

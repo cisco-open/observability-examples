@@ -70,6 +70,14 @@ test:
 		$(MAKE) -C $$dir test; \
 	done
 
+.PHONY: integration_test
+integration_test:
+	@echo "Running local tests in each solution example directory..."
+	@for dir in $(EXAMPLES_DIRS); do \
+		echo "Testing in $$dir"; \
+		$(MAKE) -C $$dir integration_test; \
+	done
+
 .PHONY: clean
 clean:
 	rm -rf $(TOOLSDIR)
