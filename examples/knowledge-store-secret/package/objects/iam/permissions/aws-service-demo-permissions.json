@@ -1,12 +1,12 @@
 [
   {
     "name": "rootAPI",
-    "displayName": "SOLUTION_PREFIXawscreds:rootAPI",
+    "displayName": "awscreds:rootAPI",
     "description": "root api",
     "actionAndResources": [{
       "action": {
         "method": "GET",
-        "pathPattern": "/SOLUTION_PREFIXawscreds-func",
+        "pathPattern": "/awscreds-func",
         "classification": "READ",
         "type": "HttpAction"
       }
@@ -14,7 +14,7 @@
     {
       "action": {
         "method": "POST",
-        "pathPattern": "/SOLUTION_PREFIXawscreds-func",
+        "pathPattern": "/awscreds-func",
         "classification": "CREATE",
         "type": "HttpAction"
       }
@@ -22,12 +22,12 @@
   },
   {
     "name": "credsAPI",
-    "displayName": "SOLUTION_PREFIXawscreds:credsAPI",
+    "displayName": "awscreds:credsAPI",
     "description": "root api",
     "actionAndResources": [{
       "action": {
         "method": "GET",
-        "pathPattern": "/SOLUTION_PREFIXawscreds-func/creds",
+        "pathPattern": "/awscreds-func/creds",
         "classification": "READ",
         "type": "HttpAction"
       }
@@ -35,7 +35,7 @@
     {
       "action": {
         "method": "POST",
-        "pathPattern": "/SOLUTION_PREFIXawscreds-func/creds",
+        "pathPattern": "/awscreds-func/creds",
         "classification": "CREATE",
         "type": "HttpAction"
       }

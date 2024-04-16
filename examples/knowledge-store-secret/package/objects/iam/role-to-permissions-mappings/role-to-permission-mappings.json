@@ -6,7 +6,7 @@
   ],
   "permissions": [
     {
-      "id": "SOLUTION_PREFIXawscreds:awscredsPermissions"
+      "id": "awscreds:awscredsPermissions"
     }
   ]
 }

@@ -9,8 +9,8 @@
     ],
     "permissions": [
       {
-        "id": "SOLUTION_PREFIXawscreds:rootAPI",
-        "id": "SOLUTION_PREFIXawscreds:credsAPI"
+        "id": "awscreds:rootAPI",
+        "id": "awscreds:credsAPI"
       }
     ]
   }

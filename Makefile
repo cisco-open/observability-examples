@@ -1,5 +1,6 @@
 TOP_LEVEL := $(shell git rev-parse --show-toplevel)
 TOOLSDIR := $(TOP_LEVEL)/.tools
+EXAMPLES_DIRS := $(wildcard examples/*)
 ADDLICENSE := $(TOOLSDIR)/addlicense
 FSOC := $(TOOLSDIR)/fsoc
 FSOC_VERSION := 0.67.0
@@ -63,7 +64,11 @@ markdown-lint:
 
 .PHONY: test
 test:
-	@echo "testing placeholder"
+	@echo "Running tests in each solution example directory..."
+	@for dir in $(EXAMPLES_DIRS); do \
+		echo "Testing in $$dir"; \
+		$(MAKE) -C $$dir test; \
+	done
 
 .PHONY: clean
 clean:
