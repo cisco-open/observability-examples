@@ -40,7 +40,8 @@ the `knowledge-store-investigation` folder.
 chmod u+x *.sh
 ```
 
-run the `checkFSOC.sh`script to verify you have a recent version of the COP CLI
+run the `checkFSOC.sh`script to verify you have a recent version of the COP CLI.
+*this example requires at LEAST version 0.68 of `fsoc`*
 
 ```shell
 ./checkFSOC.sh
@@ -420,7 +421,8 @@ Run the `push.sh` script.
 ./push.sh
 ```
 
-The script uses the `fsoc` command like this:
+The script uses the `fsoc solution push` command. Here's what it looks like
+when you run `push.sh`:
 
 ```shell
 GHENDREY-M-NWK4:knowledge-store-investigation ghendrey$ ./push.sh
@@ -456,7 +458,7 @@ Query the Type definition for investigation. Be sure to replace your username in
 the fsoc command below :
 
 ```shell
-fsoc knowledge get-type --type ${USER}malware:investigation
+fsoc knowledge get-type --type ${USER}malware.base:investigation
 ```
 
 ```yaml
@@ -576,7 +578,7 @@ verify it is in the store. In the fsoc command below, be sure to replace
 USERNAME with your username.
 
 ```shell
-fsoc  knowledge get --layer-type=SOLUTION  --type=${USER}malware:investigation  --layer-id=${USER}malware --object-id='${USER}malware:/name=Malware Incident Report;/caseID=Example:00000'
+fsoc  knowledge get --layer-type=SOLUTION  --type=${USER}malware.base:investigation  --layer-id=${USER}malware.base --object-id="${USER}malware.base:/name=Malware Incident Report;/caseID=Example:00000"
 ```
 
 In the response, note that your object is contained in the `data` field
@@ -636,7 +638,7 @@ Note, if you want to query all existing investigations, lust leave off the
 objects.
 
 ```shell
-fsoc  knowledge get --layer-type=SOLUTION  --type=${USER}malware:investigation  --layer-id=${USER}malware
+fsoc  knowledge get --layer-type=SOLUTION  --type=${USER}malware.base:investigation  --layer-id=${USER}malware.base
 ```
 
 The Cisco Observability Platform contains several built-in roles. This example
