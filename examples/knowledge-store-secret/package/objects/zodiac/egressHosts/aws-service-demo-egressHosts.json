@@ -11,8 +11,8 @@
   ],
   "functions": [
     {
-      "name": "SOLUTION_PREFIXawscreds-func",
-      "solution": "SOLUTION_PREFIXawscreds"
+      "name": "awscreds-func",
+      "solution": "awscreds"
     }
   ]
 }

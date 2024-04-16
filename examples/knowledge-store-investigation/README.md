@@ -33,32 +33,24 @@ The `package` folder contains the solution structure.
 └── validate.sh
 ```
 
-Make sure all the script have executable permission by running this command in
-the `knowledge-store-investigation` folder.
+*this example requires at LEAST version 0.68 of `fsoc`*, make sure you have the
+correct version.
 
 ```shell
-chmod u+x *.sh
-```
-
-run the `checkFSOC.sh`script to verify you have a recent version of the COP CLI.
-*this example requires at LEAST version 0.68 of `fsoc`*
-
-```shell
-./checkFSOC.sh
+fsoc version
 ```
 
 if you need to upgrade to the newer fsoc version,
 follow [fsoc installation doc](https://github.com/cisco-open/fsoc).
 
-run the `fork.sh`script. It will run the `fsoc solution fork` command which
-downloads the authoritative version of package from the platfom, and creates
-a local copy of it prefixed with your username. So if your local username is
-'fred', fork.sh will make a local folder named `fredmalware`. All of the
-commands
-apply a platform tag called 'base' to your fork.
+Tun the `fsoc solution fork` command, which downloads the authoritative version
+of package from the platfom, and creates a local copy of it prefixed with your
+username. So if your local username is 'fred', fork.sh will make a local folder
+named `fredmalware`. All of the commands apply a platform tag called 'base' to
+your fork.
 
 ```shell
-./fork.sh
+fsoc solution fork --source-dir=package ${USER}malware --verbose
 ```
 
 Verify you have a folder whose name is `${USER}malware`
@@ -323,9 +315,9 @@ A Type declaration has these parts:
 ```
 
 Let's briefly discuss how the
-Knowledge Store REST APIs leverage object _identity_. Consider that two
+Knowledge Store REST APIs leverage object __identity__. Consider that two
 solutions can both create a type called investigation. This clash is resolved by
-using _fully qualified_ id's. For example, try this command to list solutions
+using __fully qualified__ id's. For example, try this command to list solutions
 in your cell:
 
 ```shell
@@ -417,25 +409,23 @@ thing to note is that it complies with the JSON schema for `investigation`
 }
 ```
 
-Now run `validate.sh` to check your solution for errors:
+Now validate your solution for errors:
 
 ```shell
-./validate.sh
+fsoc solution validate --directory ${USER}malware --tag=base -v
 ```
 
 The next step is to push your solution to the platform. This assumes
 you already have familiarity with [fsoc](https://github.com/cisco-open/fsoc).
-Run the `push.sh` script.
 
 ```shell
-./push.sh
+fsoc solution push --directory ${USER}malware --tag=base
 ```
 
-The script uses the `fsoc solution push` command. Here's what it looks like
-when you run `push.sh`:
+Here's what it looks like when you run the command:
 
 ```shell
-GHENDREY-M-NWK4:knowledge-store-investigation ghendrey$ ./push.sh
+$ fsoc solution push --directory ${USER}malware --tag=base
 Creating solution zip: "/var/folders/_h/gk53dw4j4vx9k0zjtpy_k3wm0000gn/T/ghendreymalware308006586.zip"
 Deploying solution ghendreymalware version 1.0.4 with tag base
 Successfully uploaded solution ghendreymalware version 1.0.4 with tag base.
@@ -448,10 +438,11 @@ that you wish to subscribe to.
 fsoc solution subscribe ${USER}malware --tag=base
 ```
 
-Check the status of your subscription using the included `status.sh`:
+Check the status of your subscription using the
+included `fsoc solution status ${USER}malware`:
 
 ```shell
-GHENDREY-M-NWK4:knowledge-store-investigation ghendrey$ ./status.sh
+$ fsoc solution status ${USER}malware
 SOLUTION_PREFIX set to: ghendrey
                        Solution Name: ghendreymalware
         Solution Subscription Status: Subscribed
@@ -588,7 +579,7 @@ verify it is in the store. In the fsoc command below, be sure to replace
 USERNAME with your username.
 
 ```shell
-fsoc  knowledge get --layer-type=SOLUTION  --type=${USER}malware.base:investigation  --layer-id=${USER}malware.base --object-id="${USER}malware.base:/name=Malware Incident Report;/caseID=Example:00000"
+fsoc knowledge get --layer-type=SOLUTION  --type=${USER}malware.base:investigation  --layer-id=${USER}malware.base --object-id="${USER}malware.base:/name=Malware Incident Report;/caseID=Example:00000"
 ```
 
 In the response, note that your object is contained in the `data` field
@@ -654,9 +645,9 @@ fsoc  knowledge get --layer-type=SOLUTION  --type=${USER}malware.base:investigat
 The Cisco Observability Platform contains several built-in roles. This example
 solution grants some of those roles with permission to access the malware
 investigation Type. The solution includes `permissions.json` and
-`role-to-permission-mappings.json`. Note that after running the `fork.sh`
-script, SOLUTION_PREFIX has been replaced with your username from your local
-operating system.
+`role-to-permission-mappings.json`. Note that after forking the solution,
+SOLUTION_PREFIX has been replaced with your username from your local operating
+system.
 
 Here is `permissions.json`. Note the use of
 [Stated](https://github.com/cisco-open/stated) templates to dynamically

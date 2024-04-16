@@ -1,8 +1,9 @@
 TOP_LEVEL := $(shell git rev-parse --show-toplevel)
 TOOLSDIR := $(TOP_LEVEL)/.tools
+EXAMPLES_DIRS := $(wildcard examples/*)
 ADDLICENSE := $(TOOLSDIR)/addlicense
 FSOC := $(TOOLSDIR)/fsoc
-FSOC_VERSION := 0.67.0
+FSOC_VERSION := 0.68.0
 ADDLICENSE_VERSION := 1.1.1
 
 # Detect OS and Architecture
@@ -12,20 +13,20 @@ ifeq ($(UNAME_S),Darwin)
 	ifeq ($(UNAME_M),arm64)
 		# Apple Silicon Mac
 		ADDLICENSE_BINARY := addlicense_$(ADDLICENSE_VERSION)_macOS_arm64.tar.gz
-		FSOC_BINARY := fsoc-darwin-arm64.tar.gz
+		FSOC_BINARY := fsoc-darwin-arm64
 	else
 		# Intel Mac
 		ADDLICENSE_BINARY := addlicense_$(ADDLICENSE_VERSION)_macOS_x86_64.tar.gz
-		FSOC_BINARY := fsoc-darwin-amd64.tar.gz
+		FSOC_BINARY := fsoc-darwin-amd64
 	endif
 	MDLINT := brew list markdownlint-cli || brew install markdownlint-cli
 else ifeq ($(UNAME_S),Linux)
 	ifeq ($(UNAME_M),x86_64)
 		ADDLICENSE_BINARY := addlicense_$(ADDLICENSE_VERSION)_Linux_x86_64.tar.gz
-		FSOC_BINARY := fsoc-linux-amd64.tar.gz
+		FSOC_BINARY := fsoc-linux-amd64
 	else ifeq ($(UNAME_M),arm64)
 		ADDLICENSE_BINARY := addlicense_$(ADDLICENSE_VERSION)_Linux_arm64.tar.gz
-		FSOC_BINARY := fsoc-linux-arm64.tar.gz
+		FSOC_BINARY := fsoc-linux-arm64
 	endif
 endif
 
@@ -37,9 +38,10 @@ $(ADDLICENSE):
 
 $(FSOC):
 	mkdir -p $(TOOLSDIR)
-	wget https://github.com/cisco-open/fsoc/releases/download/v$(FSOC_VERSION)/$(FSOC_BINARY)
-	tar -xvf $(FSOC_BINARY) -C $(TOOLSDIR) fsoc
-	rm $(FSOC_BINARY)
+	wget https://github.com/cisco-open/fsoc/releases/download/v$(FSOC_VERSION)/$(FSOC_BINARY).tar.gz
+	tar -xvf $(FSOC_BINARY).tar.gz -C $(TOOLSDIR) $(FSOC_BINARY)
+	mv $(TOOLSDIR)/$(FSOC_BINARY) $(TOOLSDIR)/fsoc
+	rm $(FSOC_BINARY).tar.gz
 
 .PHONY: all
 all: lint markdown-lint test check-license
@@ -54,16 +56,73 @@ add-license: $(ADDLICENSE)
 	@echo "adding license headers, please commit any modified files"
 	$(ADDLICENSE) -s -v -c "Cisco Systems, Inc. and its affiliates" -l apache .
 
+
+define create-folder-lint-target
+.PHONY: lint-$(1)
+lint-$(1): $(FSOC)
+	@echo "Linting $(1) folder"
+	$(MAKE) -C $(1) test
+endef
+
+# Apply the markdown-lint target creation for each folder
+$(foreach folder,$(EXAMPLES_DIRS),$(eval $(call create-folder-lint-target,$(folder))))
+
+# Define the lint-all target to run lint targets for all folders in parallel
 .PHONY: lint
-lint:
+lint: $(addprefix lint-,$(EXAMPLES_DIRS))
+	@echo "All linting completed"
+
+
+# Create a markdown-lint target for each folder and run them in parallel
+define create-folder-markdown-lint-target
+.PHONY: markdown-lint-$(1)
+markdown-lint-$(1): $(FSOC)
+	@echo "Makrdown linting $(1) folder"
+	markdownlint $(1)/*.md
+endef
+
+# Apply the markdown-lint target creation for each folder
+$(foreach folder,$(EXAMPLES_DIRS),$(eval $(call create-folder-markdown-lint-target,$(folder))))
 
 .PHONY: markdown-lint
-markdown-lint:
-	markdownlint *.md **/*.md .github/**/*.md
+markdown-lint: $(addprefix markdown-lint-,$(EXAMPLES_DIRS))
+	markdownlint *.md **/*.md
 
+# Define a target to run tests for each folder
+define create-folder-test-target
+.PHONY: test-$(1)
+test-$(1): $(FSOC)
+	@echo "Testing $(1) folder"
+	$(MAKE) -C $(1) test
+
+endef
+
+# Apply the test target creation for each folder
+$(foreach folder,$(EXAMPLES_DIRS),$(eval $(call create-folder-test-target,$(folder))))
+
+
+# Define the test-all target to run test targets for all folders in parallel
 .PHONY: test
-test:
-	@echo "testing placeholder"
+test: $(addprefix test-,$(EXAMPLES_DIRS))
+	@echo "All tests completed"
+
+# Define a target to run tests for each folder
+define create-folder-integration_test-target
+.PHONY: integration_test-$(1)
+integration_test-$(1): $(FSOC)
+	@echo "Testing $(1) folder"
+	$(MAKE) -C $(1) integration_test
+
+endef
+
+# Apply the integration_test target creation for each folder
+$(foreach folder,$(EXAMPLES_DIRS),$(eval $(call create-folder-integration_test-target,$(folder))))
+
+# Define the integration_test-all target to run integration_test targets for all folders in parallel
+.PHONY: integration_test
+integration_test: $(addprefix integration_test-,$(EXAMPLES_DIRS))
+	@echo "All integration_tests completed"
+
 
 .PHONY: clean
 clean:

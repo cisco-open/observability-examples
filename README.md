@@ -12,11 +12,16 @@ and visualization using dashboards.
 
 ## Getting Started
 
-To get a local copy up and running follow these simple steps.
+Each directory in examples contains a solution example. Each example has its own
+README.md file that describes the example and how to run it.
+
+To set up the environment for running the examples, follow the instructions
+below.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
+This is an example of how to list things you need to use the software and how to
+install them.
 
 - brew
 
@@ -42,18 +47,33 @@ This is an example of how to list things you need to use the software and how to
    git clone https://github.com/cisco-open/observability-examples.git
    ```
 
+### Validation
+
+[Configure fsoc to use your Cisco Observability Platform tenant](https://github.com/cisco-open/fsoc#Configure)
+
+```shell
+make integration_test
+```
+
 ## Roadmap
 
-See the [open issues](https://github.com/cisco-open/observability-examples/issues) for a list of proposed features (and known issues).
+See
+the [open issues](https://github.com/cisco-open/observability-examples/issues)
+for a list of proposed features (and known issues).
 
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**. For detailed contributing guidelines, please see [CONTRIBUTING.md](CONTRIBUTING.md)
+Contributions are what make the open source community such an amazing place to
+learn, inspire, and create. Any contributions you make are **greatly appreciated
+**. For detailed contributing guidelines, please
+see [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## License
 
-Distributed under the `Apache Software License` License. See [LICENSE](LICENSE) for more information.
+Distributed under the `Apache Software License` License. See [LICENSE](LICENSE)
+for more information.
 
 ## Contact
 
-For all project feedback, please use [Github Issues](https://github.com/cisco-open/observability-examples/issues).
+For all project feedback, please
+use [Github Issues](https://github.com/cisco-open/observability-examples/issues).
