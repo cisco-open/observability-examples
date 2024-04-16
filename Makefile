@@ -69,12 +69,12 @@ $(foreach folder,$(EXAMPLES_DIRS),$(eval $(call create-folder-markdown-lint-targ
 
 # Define the lint-all target to run lint targets for all folders in parallel
 .PHONY: lint
-lint: markdown-lint $(addprefix markdown-lint-,$(EXAMPLES_DIRS))
+lint:
 	@echo "All linting completed"
 
 
 .PHONY: markdown-lint
-markdown-lint:
+markdown-lint: $(addprefix markdown-lint-,$(EXAMPLES_DIRS))
 	markdownlint *.md **/*.md
 
 # Define a target to run tests for each folder
