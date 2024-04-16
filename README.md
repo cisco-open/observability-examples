@@ -12,7 +12,10 @@ and visualization using dashboards.
 
 ## Getting Started
 
-To get a local copy up and running follow these simple steps.
+Each directory in examples contains a solution example. Each example has its own 
+README.md file that describes the example and how to run it.
+
+To set up the environment for running the examples, follow the instructions below.
 
 ### Prerequisites
 
@@ -41,6 +44,13 @@ This is an example of how to list things you need to use the software and how to
    ```sh
    git clone https://github.com/cisco-open/observability-examples.git
    ```
+
+### Validation
+[Configure fsoc to use your Cisco Observability Platform tenant](https://github.com/cisco-open/fsoc#Configure)
+
+```shell
+make integration_test
+```
 
 ## Roadmap
 
