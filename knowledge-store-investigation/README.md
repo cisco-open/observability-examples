@@ -47,11 +47,21 @@ run the `checkFSOC.sh`script to verify you have a recent version of the COP CLI.
 ./checkFSOC.sh
 ```
 
+if you need to upgrade to the newer fsoc version,
+follow [fsoc installation doc](https://github.com/cisco-open/fsoc).
+
 run the `fork.sh`script. It will run the `fsoc solution fork` command which
 downloads the authoritative version of package from the platfom, and creates
 a local copy of it prefixed with your username. So if your local username is
-'fred', fork.sh will make a local folder named `fredmalware`. All of the commands
-apply a platform tag called 'base' to your fork. 
+'fred', fork.sh will make a local folder named `fredmalware`. All of the
+commands
+apply a platform tag called 'base' to your fork.
+
+```shell
+./fork.sh
+```
+
+Verify you have a folder whose name is `${USER}malware`
 
 ```text
 .
@@ -79,8 +89,6 @@ apply a platform tag called 'base' to your fork.
 └── validate.sh
 ```
 
-Verify you have a folder whose name is `${USER}malware`
-
 You now have a solution manifest file
 `${USER}malware/manifest.json` that looks like this, except the
 solution's name field will look like `fredmalware` if `fred` is your username.
@@ -90,7 +98,9 @@ solution's name field will look like `fredmalware` if `fred` is your username.
   "manifestVersion": "1.1.0",
   "name": "malwareexample",
   "solutionVersion": "1.0.4",
-  "dependencies": ["iam"],
+  "dependencies": [
+    "iam"
+  ],
   "description": "network intrusion investigation",
   "contact": "-",
   "homepage": "-",
@@ -99,7 +109,7 @@ solution's name field will look like `fredmalware` if `fred` is your username.
   "types": [
     "types/investigation.json"
   ],
-  "objects":[
+  "objects": [
     {
       "type": "@INSTALL ${$sys.solutionId & ':investigation'}",
       "objectsFile": "objects/malwareInvestigationDefaults.json"
@@ -649,10 +659,10 @@ script, SOLUTION_PREFIX has been replaced with your username from your local
 operating system.
 
 Here is `permissions.json`. Note the use of
-[Stated](https://github.com/cisco-open/stated) templates to dynamically 
+[Stated](https://github.com/cisco-open/stated) templates to dynamically
 generate certain fields. Variables like `sys.solutionId` incorporate your
 tag. By using Stated templates, you do not have to edit your solution files
-when you want to push a new tag of your solution. 
+when you want to push a new tag of your solution.
 
 ```json
   [
