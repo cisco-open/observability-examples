@@ -30,8 +30,15 @@ test:
 clean:
 	@test -d ./"${SOLUTION_NAME}" && rm -r ./"${SOLUTION_NAME}" || echo "nothing to clean"
 
+lint: markdown-lint
+
+markdown-lint:
+	@echo "Running markdown lint..."
+	markdownlint *.md
+	@echo "Completed markdown lint."
+
 # Test which require fsoc tenant set up
 integration_test: clean fork validate
-	@echo "Running custom tests..."
-	@test -d ./"${SOLUTION_NAME} && rm -r ./"${SOLUTION_NAME}" || echo "nothing to clean"
-	@echo "Custom tests completed."
+	@echo "Running integration tests..."
+	@test -d ./"${SOLUTION_NAME}" && rm -r ./"${SOLUTION_NAME}" || echo "nothing to clean"
+	@echo "Completed integration tests."

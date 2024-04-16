@@ -425,7 +425,7 @@ fsoc solution push --directory ${USER}malware --tag=base
 Here's what it looks like when you run the command:
 
 ```shell
-GHENDREY-M-NWK4:knowledge-store-investigation ghendrey$ fsoc solution push --directory ${USER}malware --tag=base
+$ fsoc solution push --directory ${USER}malware --tag=base
 Creating solution zip: "/var/folders/_h/gk53dw4j4vx9k0zjtpy_k3wm0000gn/T/ghendreymalware308006586.zip"
 Deploying solution ghendreymalware version 1.0.4 with tag base
 Successfully uploaded solution ghendreymalware version 1.0.4 with tag base.
@@ -442,7 +442,7 @@ Check the status of your subscription using the
 included `fsoc solution status ${USER}malware`:
 
 ```shell
-GHENDREY-M-NWK4:knowledge-store-investigation ghendrey$ fsoc solution status ${USER}malware
+$ fsoc solution status ${USER}malware
 SOLUTION_PREFIX set to: ghendrey
                        Solution Name: ghendreymalware
         Solution Subscription Status: Subscribed

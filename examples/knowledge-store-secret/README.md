@@ -57,15 +57,14 @@ Platform.
 Follow [fsoc cli installation guide](https://github.com/cisco-open/fsoc) to
 install the FSOC CLI.
 
-**Check FSOC CLI Installation and version**: 
+**Check FSOC CLI Installation and version**:
+
 ```shell
 fsoc version
 ```
 
 if you need to upgrade to the newer fsoc version,
 follow [fsoc installation doc](https://github.com/cisco-open/fsoc).
-
-
 
 ## Configure FSOC CLI
 
@@ -130,29 +129,39 @@ isolation. The following scripts help to create a uniquely named soluition from
 the template located in the `package`
 folder and deploying it to the platform.
 
-1. **Fork the Solution from the template**: Execute `fsoc solution fork --source-dir=package ${USER}awscreds -v` to create a copy
+1. **Fork the Solution from the template**:
+   Execute `fsoc solution fork --source-dir=package ${USER}awscreds -v` to
+   create a copy
    of the solution `package` prefixed with
    your username. This process will also update various files within the
    solution with your username, preparing it for a
    personalized deployment.
-2. **Check your solution**: The fork command creates your solution folder named `${USER}awscreds`.
+2. **Check your solution**: The fork command creates your solution folder
+   named `${USER}awscreds`.
 3. **Define the Knowledge Type**: Review
    the `${USER}awscreds/types/awscreds.json` directory. This file defines the
    data type for securely storing database credentials within the Knowledge
    Store.
-4. **Validate Your Solution**: Run `fsoc solution validate --directory ${USER}awscreds --tag=base -v` to check for any errors in
+4. **Validate Your Solution**:
+   Run `fsoc solution validate --directory ${USER}awscreds --tag=base -v` to
+   check for any errors in
    your solution package.
-5. **Deploy and Subscribe to the Solution**: Execute `fsoc solution push --directory ${USER}awscreds --tag=base` to deploy your
+5. **Deploy and Subscribe to the Solution**:
+   Execute `fsoc solution push --directory ${USER}awscreds --tag=base` to deploy
+   your
    solution to the Cisco Observability
    Platform. This script uses the FSOC CLI for deployment, subscription and
    waiting for the solution version to be
    installed.
-6. **Subscribe your tenant to the solution**: `fsoc solution subscribe ${USER}awscreds --tag=base`
-7. **Verify Deployment**: Utilize `fsoc solution status ${USER}malware --tag=base` to check the status of your
+6. **Subscribe your tenant to the solution
+   **: `fsoc solution subscribe ${USER}awscreds --tag=base`
+7. **Verify Deployment**:
+   Utilize `fsoc solution status ${USER}malware --tag=base` to check the status
+   of your
    solution deployment. Ensure that the
    solution name matches your `${USER}awscreds` and that the installation was
    successful.
-8.**Add AWS Credentials Object**: Use the command below to add a knowledge
+   8.**Add AWS Credentials Object**: Use the command below to add a knowledge
    object for your AWS Credentials. The
    provided `awscredsexample.json` file contains an example of the knowledge
    object you will create.
