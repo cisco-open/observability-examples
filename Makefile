@@ -56,6 +56,23 @@ add-license: $(ADDLICENSE)
 	@echo "adding license headers, please commit any modified files"
 	$(ADDLICENSE) -s -v -c "Cisco Systems, Inc. and its affiliates" -l apache .
 
+
+define create-folder-lint-target
+.PHONY: lint-$(1)
+lint-$(1): $(FSOC)
+	@echo "Linting $(1) folder"
+	$(MAKE) -C $(1) test
+endef
+
+# Apply the markdown-lint target creation for each folder
+$(foreach folder,$(EXAMPLES_DIRS),$(eval $(call create-folder-lint-target,$(folder))))
+
+# Define the lint-all target to run lint targets for all folders in parallel
+.PHONY: lint
+lint: $(addprefix lint-,$(EXAMPLES_DIRS))
+	@echo "All linting completed"
+
+
 # Create a markdown-lint target for each folder and run them in parallel
 define create-folder-markdown-lint-target
 .PHONY: markdown-lint-$(1)
@@ -66,12 +83,6 @@ endef
 
 # Apply the markdown-lint target creation for each folder
 $(foreach folder,$(EXAMPLES_DIRS),$(eval $(call create-folder-markdown-lint-target,$(folder))))
-
-# Define the lint-all target to run lint targets for all folders in parallel
-.PHONY: lint
-lint:
-	@echo "All linting completed"
-
 
 .PHONY: markdown-lint
 markdown-lint: $(addprefix markdown-lint-,$(EXAMPLES_DIRS))
