@@ -1,0 +1,6 @@
+{
+  "type": "alertingTrigger",
+  "data": {
+    "name": "test alert trigger"
+  }
+}

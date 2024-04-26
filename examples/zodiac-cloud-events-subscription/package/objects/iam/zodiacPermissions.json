@@ -1,0 +1,99 @@
+[
+  {
+    "name": "rootAPI",
+    "displayName": "workflowexample:rootAPI",
+    "description": "root api",
+    "actionAndResources": [{
+      "action": {
+        "method": "GET",
+        "pathPattern": "/workflowexample-func/",
+        "classification": "READ",
+        "type": "HttpAction"
+      }
+    }]
+  },{
+    "name": "createWorkflow",
+    "displayName": "workflowexample:createWorkflow",
+    "description": "Create Workflow",
+    "actionAndResources": [{
+      "action": {
+        "method": "POST",
+        "pathPattern": "/workflowexample-func/workflow",
+        "classification": "CREATE",
+        "type": "HttpAction"
+      }
+    }]
+  },{
+  "name": "getAllWorkflows",
+  "displayName": "workflowexample:getAllWorkflows",
+  "description": "Get All Workflow IDs",
+  "actionAndResources": [{
+    "action": {
+      "method": "GET",
+      "pathPattern": "/workflowexample-func/workflow/",
+      "classification": "READ",
+      "type": "HttpAction"
+    }
+  }]
+  },{
+    "name": "getWorkflow",
+    "displayName": "workflowexample:getWorkflow",
+    "description": "Get Workflow output",
+    "actionAndResources": [{
+      "action": {
+        "method": "GET",
+        "pathPattern": "/workflowexample-func/workflow/{id}",
+        "classification": "READ",
+        "type": "HttpAction"
+      }
+    }]
+   },{
+    "name": "deleteWorkflow",
+    "displayName": "workflowexample:deleteWorkflow",
+    "description": "Delete Workflow",
+    "actionAndResources": [{
+      "action": {
+        "method": "DELETE",
+        "classification": "DELETE",
+        "pathPattern": "/workflowexample-func/workflow/{id}",
+        "type": "HttpAction"
+      }
+    }]
+  },{
+    "name": "restoreWorkflow",
+    "displayName": "workflowexample:restoreWorkflow",
+    "description": "Restore Workflow",
+    "actionAndResources": [{
+      "action": {
+        "method": "POST",
+        "classification": "CREATE",
+        "pathPattern": "/workflowexample-func/restore/{id}",
+        "type": "HttpAction"
+      }
+    }]
+  },{
+    "name": "getRestoreSnapshot",
+    "displayName": "workflowexample:getRestoreSnapshot",
+    "description": "Get Workflow Restore Snapshot",
+    "actionAndResources": [{
+      "action": {
+        "method": "GET",
+        "classification": "READ",
+        "pathPattern": "/workflowexample-func/restore/{id}",
+        "type": "HttpAction"
+      }
+    }]
+  },{
+    "name": "sendWorkflowEvent",
+    "displayName": "workflowexample:sendWorkflowEvent",
+    "description": "Send Event to a Workflow topic and subscriberId",
+    "actionAndResources": [{
+      "action": {
+        "method": "POST",
+        "pathPattern": "/workflowexample-func/workflow/{id}/{topic}/{subscriberId}",
+        "classification": "CREATE",
+        "type": "HttpAction"
+      }
+    }]
+  }
+]

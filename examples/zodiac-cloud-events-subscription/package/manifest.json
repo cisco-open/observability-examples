@@ -1,0 +1,49 @@
+{
+    "manifestVersion": "1.0.0",
+    "name": "workflowexample",
+    "solutionVersion": "0.0.1",
+    "dependencies": ["zodiac", "iam", "solutionsecret"],
+    "description": "stated workflow test",
+    "contact": "sesergee@cisco.com",
+    "homepage": "the url for this solution's homepage",
+    "gitRepoUrl": "the url for the git repo holding your solution",
+    "readme": "the url for this solution's readme file",
+    "types": [
+        "types/event.json",
+        "types/workflow.json"
+    ],
+    "objects": [
+        {
+            "type": "zodiac:function",
+            "objectsFile": "objects/zodiac/function.json"
+        },
+        {
+            "type": "zodiac:egressHosts",
+            "objectsFile": "objects/zodiac/egressHosts.json"
+        },
+        {
+            "type": "zodiac:ceSubscription",
+            "objectsFile": "objects/zodiac/workflowSubscription.json"
+        },
+        {
+            "type": "zodiac:ceSubscription",
+            "objectsFile": "objects/zodiac/eventSubscription.json"
+        },
+        {
+            "type": "iam:Permission",
+            "objectsFile": "objects/iam/zodiacPermissions.json"
+        },
+        {
+            "type": "iam:Permission",
+            "objectsFile": "objects/iam/eventTypePermissions.json"
+        },
+        {
+            "type": "iam:Permission",
+            "objectsFile": "objects/iam/workflowTypePermissions.json"
+        },
+        {
+            "type": "iam:RoleToPermissionMapping",
+            "objectsFile": "objects/iam/roleToPermissionMappings.json"
+        }
+    ]
+}
