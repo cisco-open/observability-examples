@@ -117,19 +117,21 @@ folder and deploying it to the platform.
 8. **Create Workflow Object**: Use the command below to add a knowledge
    object for your AWS Credentials. The
    provided `workflow.json` object file contains an example of stated workflow.
+
    ```shell
    fsoc knowledge create \ 
       --type=${USER}workflow:workflow \
       --layer-type=TENANT \ 
       --object-file=${USER}workflow/objects/example/workflow.json
     ```
+
 9. **Create Event Object**: Use the command below to add a knowledge object
    for your AWS Credentials. The
    provided `event.json` object file contains an example of stated workflow.
+
    ```shell
    fsoc knowledge create \ 
       --type=${USER}workflow:event \
       --layer-type=TENANT \ 
       --object-file=${USER}workflow/objects/example/event.json
     ```
-
