@@ -7,7 +7,10 @@ Store Types.
 <!-- TOC -->
 * [Zodiac Cloud Events Subscription Solution](#zodiac-cloud-events-subscription-solution)
   * [Learning Objectives](#learning-objectives)
-  * [](#)
+  * [Example overview](#example-overview)
+  * [Prerequisites](#prerequisites)
+  * [Solution structure](#solution-structure)
+  * [Deploying Your Solution](#deploying-your-solution)
 <!-- TOC -->
 
 ## Learning Objectives
@@ -19,13 +22,16 @@ Observability Platform and how to use the solution.
 
 ## Example overview
 
-The example uses [stated-workflow](https://github.com/cisco-open/stated-workflow) to demonstrate how a Zodiac function can 
+The example
+uses [stated-workflow](https://github.com/cisco-open/stated-workflow) to
+demonstrate how a Zodiac function can
 be subscribed to objects of Event and Workflow types.
 
 Workflow type defines a stated workflow, and event type represents a cloud event
 that triggers the workflow.
 
 ## Prerequisites
+
 Install [Prerequisites](https://github.com/cisco-open/observability-examples#Prerequisites).
 
 ## Solution structure
@@ -53,16 +59,19 @@ package/
     ├── event.json
     └── workflow.json
 ```
+
 * `manifest.json` contains a solution manifest file that defines the solution
   name, version, objects and types included
 * `types` directory contains the definition of the Knowledge Store types
-* `objects/iam` contains the IAM permissions and role mappings for types and zodiac function
+* `objects/iam` contains the IAM permissions and role mappings for types and
+  zodiac function
 * `objects/zodiac` contains the zodiac function to demonstrate how to use the
   secrets
 * `objects/example` contains an example of the knowledge object for the AWS
   Credentials
 
 ## Deploying Your Solution
+
 Cisco Observability Platform is a multi-tenant platform, which makes it easy to
 create and share solutions with other
 users. You can easily publish your solution, but it has to have a unique name
@@ -89,7 +98,8 @@ folder and deploying it to the platform.
    check for any errors in
    your solution package.
 5. **Deploy and Subscribe to the Solution**:
-   Execute `fsoc solution push --directory ${USER}workflow --tag=stable` to deploy
+   Execute `fsoc solution push --directory ${USER}workflow --tag=stable` to
+   deploy
    your
    solution to the Cisco Observability
    Platform. This script uses the FSOC CLI for deployment, subscription and
@@ -98,11 +108,12 @@ folder and deploying it to the platform.
 6. **Subscribe your tenant to the solution
    **: `fsoc solution subscribe ${USER}workflow --tag=stable`
 7. **Verify Deployment**:
-   Utilize `fsoc solution status ${USER}malware --tag=stable` to check the status
+   Utilize `fsoc solution status ${USER}malware --tag=stable` to check the
+   status
    of your
    solution deployment. Ensure that the
    solution name matches your `${USER}workflow` and that the installation was
-   successful. 
+   successful.
 8. **Create Workflow Object**: Use the command below to add a knowledge
    object for your AWS Credentials. The
    provided `workflow.json` object file contains an example of stated workflow.
