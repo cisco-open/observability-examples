@@ -1,0 +1,17 @@
+kind: metric
+name: shipping.cost.total
+displayName: Total shipping cost
+namespace:
+  version: 1
+  name: '@INSTALL ${$sys.solutionId}'
+type: double
+aggregationTemporality: delta
+category: sum
+contentType: sum
+unit: '{$}'
+isMonotonic: false
+attributeDefinitions:
+  attributes:
+    zipcode:
+      type: string
+      description: Zip code

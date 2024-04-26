@@ -1,0 +1,17 @@
+kind: metric
+name: cart.products.total
+displayName: Number of products added to cart
+namespace:
+  version: 1
+  name: '@INSTALL ${$sys.solutionId}'
+type: long
+aggregationTemporality: delta
+category: sum
+contentType: sum
+unit: '{products}'
+isMonotonic: false
+attributeDefinitions:
+  attributes:
+    user.id:
+      type: string
+      description: User identifier

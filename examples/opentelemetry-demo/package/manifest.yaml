@@ -1,0 +1,26 @@
+manifestVersion: 1.1.0
+name: opentelemetrydemo
+solutionVersion: 1.0.0
+dependencies:
+  - fmm
+  - codex
+description: Extending OpenTelemetry Demo https://opentelemetry.io/docs/demo/
+contact: "-"
+homepage: "-"
+gitRepoUrl: "-"
+readme: "-"
+objects:
+  - type: fmm:entity
+    objectsFile: objects/fmm/entity/product.yaml
+  - type: fmm:entity
+    objectsFile: objects/fmm/entity/state.yaml
+  - type: fmm:entity
+    objectsFile: objects/fmm/entity/team.yaml
+  - type: fmm:metric
+    objectsFile: objects/fmm/metric/cart_products.yaml
+  - type: fmm:metric
+    objectsFile: objects/fmm/metric/shipping_cost.yaml
+  - type: codex:workflow
+    objectsFile: objects/codex/product_workflow.sw.yaml
+  - type: codex:workflow
+    objectsFile: objects/codex/state_workflow.sw.yaml

@@ -1,0 +1,37 @@
+name: product_workflow_test
+workflow: '@INSTALL ${ "codex:workflow/" & $sys.solutionId & ":product_workflow"}'
+logLevel: Trace
+input:
+  source: opentelemetry
+  data:
+    entities:
+      - id: '123'
+        type: apm:service_instance
+    type: logs:generic_record
+    timestamp: 1703279885181
+    raw: 'AddItemAsync called with userId={userId}, productId={productId}, quantity={quantity}'
+    traceId: 2e334fd2d12d185eed946de773f1303e
+    spanId: 212a2abf829c1c2b
+    attributes:
+      severity: UNKNOWN
+      container.id: 1e5ef01ea3b2585a26761f2e955e00c97d603f96e06dbdedc5971d3c7845a3a9
+      host.name: 1e5ef01ea3b2
+      productId: L9ECAV7KIM
+      quantity: 5.0
+      service.name: cartservice
+      service.namespace: opentelemetry-demo
+      telemetry.sdk.language: dotnet
+      telemetry.sdk.name: opentelemetry
+      telemetry.sdk.version: 1.8.0
+      userId: c666b1a0-029c-11ef-840e-0242ac120018
+output:
+  entity:
+    id: '123'
+    type: '@INSTALL ${ $sys.solutionId & ":product"}'
+    attributes:
+      product.id: L9ECAV7KIM
+  measurements:
+    - timestamp: 1703279885181
+      attributes:
+        user.id: c666b1a0-029c-11ef-840e-0242ac120018
+      intValue: 5

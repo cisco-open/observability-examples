@@ -1,0 +1,61 @@
+name: state_workflow_test
+workflow: '@INSTALL ${ "codex:workflow/" & $sys.solutionId & ":state_workflow"}'
+logLevel: Trace
+input:
+  source: opentelemetry
+  data:
+    traceId: 6a3e772b8c485b081df65f226073d55f
+    groupedSpans:
+      - spanId: 723c5c2a28136a49
+        traceId: 6a3e772b8c485b081df65f226073d55f
+        name: HTTP GET
+        spanKind: SERVER
+        entities:
+          - type: apm:service_instance
+            id: FQvgYrcZN5yXWKexckQemA
+          - id: BzVBfgXYNQ6NH0bWrLPbeA
+            type: apm:business_transaction
+        startedAt: 1671597555995
+        endedAt: 1671597575695
+        attributes:
+          app.shipping.zip_code: 98052
+          telemetry.sdk.language: rust
+          service.name: shippingservice
+          app.shipping.cost.total: 1479.0
+          app.shipping.items.count: 15
+      - spanId: 139facc1fca3c1ea
+        parentId: 723c5c2a28136a49
+        traceId: 6a3e772b8c485b081df65f226073d55f
+        name: HTTP GET
+        spanKind: INTERNAL
+        entities:
+          - type: apm:service_instance
+            id: FQvgYrcZN5yXWKexckQemA
+        startedAt: 1671598555995
+        endedAt: 1671598575695
+        attributes:
+          app.shipping.zip_code: 94043
+          telemetry.sdk.language: rust
+          service.name: shippingservice
+          app.shipping.cost.total: 571.20
+          app.shipping.items.count: 7
+output:
+  entities:
+    - id: H5PECO5LNLmSvTwfXc/6/g
+      observedAt: 1702534000000
+      type: '@INSTALL ${ $sys.solutionId & ":state"}'
+      attributes:
+        process.command_line: command_line1
+        service.name: ot-resource-mapper
+        service.instance.id: 546gerdf4d
+        process.pid: 23534657645764764
+        service.namespace: dpp1
+  measurements:
+    - type: common:is_a
+      from:
+        type: apm:jvm_instance
+        id: H5PECO5LNLmSvTwfXc/6/g
+      to:
+        type: apm:service_instance
+        id: CxviTkCLNmSSxjAgOR29OA
+      observedAt: 1702534000000

@@ -1,0 +1,18 @@
+kind: entity
+name: product
+displayName: Product
+namespace:
+  version: 1
+  name: '@INSTALL ${$sys.solutionId}'
+lifecycleConfiguration:
+  retentionTtlInMinutes: 600
+  purgeTtlInMinutes: 6000
+attributeDefinitions:
+  required:
+    - product.id
+  attributes:
+    product.id:
+      type: string
+      description: Product identifier
+metricTypes:
+  - "@INSTALL ${ $sys.solutionId & ':cart.products.total' }"

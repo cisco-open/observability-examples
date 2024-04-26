@@ -1,0 +1,76 @@
+kind: entity
+name: state
+displayName: US state
+namespace:
+  version: 1
+  name: '@INSTALL ${$sys.solutionId}'
+lifecycleConfiguration:
+  retentionTtlInMinutes: 600
+  purgeTtlInMinutes: 6000
+attributeDefinitions:
+  required:
+    - state.abbreviation
+  attributes:
+    state.abbreviation:
+      type: string
+      description: Two letter abbreviation for the state
+      enum:
+        - AL
+        - AK
+        - AZ
+        - AR
+        - AS
+        - CA
+        - CO
+        - CT
+        - DE
+        - DC
+        - FL
+        - GA
+        - GU
+        - HI
+        - ID
+        - IL
+        - IN
+        - IA
+        - KS
+        - KY
+        - LA
+        - ME
+        - MD
+        - MA
+        - MI
+        - MN
+        - MS
+        - MO
+        - MT
+        - NE
+        - NV
+        - NH
+        - NJ
+        - NM
+        - NY
+        - NC
+        - ND
+        - MP
+        - OH
+        - OK
+        - OR
+        - PA
+        - PR
+        - RI
+        - SC
+        - SD
+        - TN
+        - TX
+        - TT
+        - UT
+        - VT
+        - VA
+        - VI
+        - WA
+        - WV
+        - WI
+        - WY
+metricTypes:
+  - "@INSTALL ${ $sys.solutionId & ':shipping.cost.total' }"

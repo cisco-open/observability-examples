@@ -1,0 +1,158 @@
+id: state_workflow
+version: '1.0.0'
+specVersion: '0.9'
+name: state-workflow
+description: Workflow to extract state entities and their metrics from traces
+events:
+  - name: trace-received
+    type: contracts:cloudevent/platform:trace.enriched.v1
+    kind: consumed
+    source: platform
+  - name: entity-observed
+    type: contracts:cloudevent/platform:entity.observed.v1
+    kind: produced
+  - name: measurement-observed
+    type: contracts:cloudevent/platform:measurement.observed.v1
+    kind: produced
+functions:
+  - name: extract-attributes
+    type: expression
+    operation: |-
+      #cost grouped by zip code
+      groupedSpans.**.attributes{`app.shipping.zip_code`: { 'cost': `app.shipping.cost.total` ~> $sum } } ~> $spread
+  - name: zip-to-state
+    type: expression
+    operation: |-
+      ( 
+        $convertToState := function($zipcode) {
+          ($zipcode >= 35000 and $zipcode <= 36999) ? "AL" :
+          ($zipcode >= 99500 and $zipcode <= 99999) ? "AK" :
+          ($zipcode >= 85000 and $zipcode <= 86999) ? "AZ" :
+          ($zipcode >= 71600 and $zipcode <= 72999) ? "AR" :
+          ($zipcode >= 90000 and $zipcode <= 96699) ? "CA" :
+          ($zipcode >= 80000 and $zipcode <= 81999) ? "CO" :
+          ($zipcode >= 6000 and $zipcode <= 6389) or ($zipcode >= 6391 and $zipcode <= 6999) ? "CT" :
+          ($zipcode >= 19700 and $zipcode <= 19999) ? "DE" :
+          ($zipcode >= 32000 and $zipcode <= 34999) ? "FL" :
+          ($zipcode >= 30000 and $zipcode <= 31999) or ($zipcode >= 39800 and $zipcode <= 39999) ? "GA" :
+          ($zipcode >= 96700 and $zipcode <= 96999) ? "HI" :
+          ($zipcode >= 83200 and $zipcode <= 83999) ? "ID" :
+          ($zipcode >= 60000 and $zipcode <= 62999) ? "IL" :
+          ($zipcode >= 46000 and $zipcode <= 47999) ? "IN" :
+          ($zipcode >= 50000 and $zipcode <= 52999) ? "IA" :
+          ($zipcode >= 66000 and $zipcode <= 67999) ? "KS" :
+          ($zipcode >= 40000 and $zipcode <= 42999) ? "KY" :
+          ($zipcode >= 70000 and $zipcode <= 71599) ? "LA" :
+          ($zipcode >= 3900 and $zipcode <= 4999) ? "ME" :
+          ($zipcode >= 20600 and $zipcode <= 21999) ? "MD" :
+          ($zipcode >= 1000 and $zipcode <= 2799) or ($zipcode >= 5501 and $zipcode <= 5544) ? "MA" :
+          ($zipcode >= 48000 and $zipcode <= 49999) ? "MI" :
+          ($zipcode >= 55000 and $zipcode <= 56899) ? "MN" :
+          ($zipcode >= 38600 and $zipcode <= 39999) ? "MS" :
+          ($zipcode >= 63000 and $zipcode <= 65999) ? "MO" :
+          ($zipcode >= 59000 and $zipcode <= 59999) ? "MT" :
+          ($zipcode >= 27000 and $zipcode <= 28999) ? "NC" :
+          ($zipcode >= 58000 and $zipcode <= 58999) ? "ND" :
+          ($zipcode >= 68000 and $zipcode <= 69999) ? "NE" :
+          ($zipcode >= 88900 and $zipcode <= 89999) ? "NV" :
+          ($zipcode >= 3000 and $zipcode <= 3899) ? "NH" :
+          ($zipcode >= 7000 and $zipcode <= 8999) ? "NJ" :
+          ($zipcode >= 87000 and $zipcode <= 88499) ? "NM" :
+          ($zipcode >= 10000 and $zipcode <= 14999) or $zipcode = 6390 or $zipcode = 501 or $zipcode = 544 ? "NY" :
+          ($zipcode >= 43000 and $zipcode <= 45999) ? "OH" :
+          ($zipcode >= 73000 and $zipcode <= 73199) or ($zipcode >= 73400 and $zipcode <= 74999) ? "OK" :
+          ($zipcode >= 97000 and $zipcode <= 97999) ? "OR" :
+          ($zipcode >= 15000 and $zipcode <= 19699) ? "PA" :
+          ($zipcode >= 300 and $zipcode <= 999) ? "PR" :
+          ($zipcode >= 2800 and $zipcode <= 2999) ? "RI" :
+          ($zipcode >= 29000 and $zipcode <= 29999) ? "SC" :
+          ($zipcode >= 57000 and $zipcode <= 57999) ? "SD" :
+          ($zipcode >= 37000 and $zipcode <= 38599) ? "TN" :
+          ($zipcode >= 75000 and $zipcode <= 79999) or ($zipcode >= 73301 and $zipcode <= 73399) or ($zipcode >= 88500 and $zipcode <= 88599) ? "TX" :
+          ($zipcode >= 84000 and $zipcode <= 84999) ? "UT" :
+          ($zipcode >= 5000 and $zipcode <= 5999) or ($zipcode >= 20100 and $zipcode <= 20199) or ($zipcode >= 22000 and $zipcode <= 24699) or $zipcode = 20598 ? "VT" :
+          ($zipcode >= 20000 and $zipcode <= 20099) or ($zipcode >= 20200 and $zipcode <= 20599) or ($zipcode >= 56900 and $zipcode <= 56999) ? "DC" :
+          ($zipcode >= 98000 and $zipcode <= 99499) ? "WA" :
+          ($zipcode >= 24700 and $zipcode <= 26999) ? "WV" :
+          ($zipcode >= 53000 and $zipcode <= 54999) ? "WI" :
+          ($zipcode >= 82000 and $zipcode <= 83199) ? "WY" :
+          "Invalid ZIP"
+        };
+    
+        zipcodes.($ ~> |$|{'state': $convertToState($number($keys($)[0])), 'cost': $lookup($keys($)).cost, 'zipcode': $keys($)}, $keys($)[0]|);
+      )
+  - name: create-observations
+    type: expression
+    operation: |-
+      (
+        /* $entities := $distinct(zipcodes_states.state).($createEntity(stateEntityType, {"state.abbreviation": $})); */
+        $entities := $distinct(zipcodes_states.state).($createEntity(opentelemetrydemo:state, {"state.abbreviation": $}));
+        $measurements := zipcodes_states.({
+            'entity': {
+              'id': $entities[attributes.`state.abbreviation` = $.state].id,
+              'type': $entities[attributes.`state.abbreviation` = $.state].type
+            },
+            /* 'type': costMetricType, */
+            'type': opentelemetrydemo:shipping.cost.total,
+            'attributes': {
+              'zipcode': $.zipcode
+            },
+            'measurements': [
+              {
+                'timestamp': $millis(),
+                'doubleValue': $.cost
+              }
+            ]
+        });
+      
+        {
+          'entities': $entities,
+          'measurements': $measurements
+        }
+      )
+states:
+  - name: filter-traces
+    type: event
+    onEvents:
+      - eventRefs:
+          - trace-received
+        eventDataFilter:
+          data: ${ fn:extract-attributes }
+          toStateData: ${ zipcodes }
+    transition: filter
+  - name: filter
+    type: switch
+    dataConditions:
+      - name: match
+        condition: ${ $exists(zipcodes) }
+        transition: consume-event
+#        transition: set-types
+    defaultCondition:
+      end: true
+#  - name: set-types
+#    type: inject
+#    data:
+#      # sets the type of the observed entities while keeping solution identifier dynamic, which allows to rename the solution without any modifications to this workflow
+#      stateEntityType: >
+#        @INSTALL ${$sys.solutionId & ':state'}
+#      costMetricType: >
+#        @INSTALL ${$sys.solutionId & ':shipping.cost.total'}
+#    transition: consume-event
+  - name: consume-event
+    type: operation
+    stateDataFilter:
+      output: ${ result }
+    actions:
+      - name: extract-state
+        functionRef: zip-to-state
+        actionDataFilter:
+          toStateData: ${ zipcodes_states }
+      - name: create-observations
+        functionRef: create-observations
+    end:
+      terminate: true
+      produceEvents:
+        - eventRef: entity-observed
+          data: ${ entities }
+        - eventRef: measurement-observed
+          data: ${ measurements }
