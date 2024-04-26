@@ -43,11 +43,8 @@ fsoc version
 if you need to upgrade to the newer fsoc version,
 follow [fsoc installation doc](https://github.com/cisco-open/fsoc).
 
-Tun the `fsoc solution fork` command, which downloads the authoritative version
-of package from the platfom, and creates a local copy of it prefixed with your
-username. So if your local username is 'fred', fork.sh will make a local folder
-named `fredmalware`. All of the commands apply a platform tag called 'base' to
-your fork.
+Run the `fsoc solution fork` command, which creates a fork of the sample solution in the package directory, prefixed with your username. So if your local username is 'fred', it will make a local folder
+named `fredmalware`.
 
 ```shell
 fsoc solution fork --source-dir=package ${USER}malware --verbose
