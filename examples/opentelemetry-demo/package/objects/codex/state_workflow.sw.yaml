@@ -12,14 +12,17 @@ events:
     type: contracts:cloudevent/platform:entity.observed.v1
     kind: produced
   - name: measurement-observed
-    type: contracts:cloudevent/platform:measurement.observed.v1
+    type: contracts:cloudevent/platform:measurement.received.v1
     kind: produced
 functions:
   - name: extract-attributes
     type: expression
     operation: |-
-      #cost grouped by zip code
-      groupedSpans.**.attributes{`app.shipping.zip_code`: { 'cost': `app.shipping.cost.total` ~> $sum } } ~> $spread
+      {
+        /* cost grouped by zip code */
+        'zipcodes': data.groupedSpans.**.attributes{`app.shipping.zip_code`: { 'cost': `app.shipping.cost.total` ~> $sum } } ~> $spread,
+        'timestamp': $min(data.groupedSpans.spans.startedAt)
+      }
   - name: zip-to-state
     type: expression
     operation: |-
@@ -78,38 +81,45 @@ functions:
           ($zipcode >= 82000 and $zipcode <= 83199) ? "WY" :
           "Invalid ZIP"
         };
-    
-        zipcodes.($ ~> |$|{'state': $convertToState($number($keys($)[0])), 'cost': $lookup($keys($)).cost, 'zipcode': $keys($)}, $keys($)[0]|);
+      
+        {'zipcodes_states': zipcodes.($ ~> |$|{'state': $convertToState($number($keys($)[0])), 'cost': $lookup($keys($)).cost, 'zipcode': $keys($)}, $keys($)[0]|)}
       )
   - name: create-observations
     type: expression
     operation: |-
       (
-        /* $entities := $distinct(zipcodes_states.state).($createEntity(stateEntityType, {"state.abbreviation": $})); */
-        $entities := $distinct(zipcodes_states.state).($createEntity(opentelemetrydemo:state, {"state.abbreviation": $}));
-        $measurements := zipcodes_states.({
+        $createMeasurement := function($entities, $state, $zipcode, $cost, $timestamp) {(
+          $entity := $entities[attributes.`state.abbreviation` = $state];
+          {
             'entity': {
-              'id': $entities[attributes.`state.abbreviation` = $.state].id,
-              'type': $entities[attributes.`state.abbreviation` = $.state].type
+              'id': $entity.id,
+              'type': $entity.type
             },
             /* 'type': costMetricType, */
-            'type': opentelemetrydemo:shipping.cost.total,
+            'type': 'opentelemetrydemo:shipping.cost.total',
             'attributes': {
-              'zipcode': $.zipcode
+              'zipcode': $zipcode
             },
             'measurements': [
               {
-                'timestamp': $millis(),
-                'doubleValue': $.cost
+                'timestamp': $timestamp,
+                'doubleValue': $cost
               }
             ]
-        });
+          }
+        )};
       
+        /* $entities := $distinct(zipcodes_states.state).($createEntity(stateEntityType, {"state.abbreviation": $})); */
+        $entities := $distinct(zipcodes_states.state).($createEntity({'entityType': 'opentelemetrydemo:state', 'attributes': {'state.abbreviation': $}}) ~> |$|{'observedAt': $$.timestamp}|);
         {
           'entities': $entities,
-          'measurements': $measurements
+          'measurements': zipcodes_states.($createMeasurement($entities, $.state, $.zipcode, $.cost, $$.timestamp))
         }
       )
+  - name: extract-result
+    type: expression
+    operation: >
+      {'entities': entities,  'measurements': measurements}
 states:
   - name: filter-traces
     type: event
@@ -118,7 +128,6 @@ states:
           - trace-received
         eventDataFilter:
           data: ${ fn:extract-attributes }
-          toStateData: ${ zipcodes }
     transition: filter
   - name: filter
     type: switch
@@ -126,27 +135,25 @@ states:
       - name: match
         condition: ${ $exists(zipcodes) }
         transition: consume-event
-#        transition: set-types
+    #        transition: set-types
     defaultCondition:
       end: true
-#  - name: set-types
-#    type: inject
-#    data:
-#      # sets the type of the observed entities while keeping solution identifier dynamic, which allows to rename the solution without any modifications to this workflow
-#      stateEntityType: >
-#        @INSTALL ${$sys.solutionId & ':state'}
-#      costMetricType: >
-#        @INSTALL ${$sys.solutionId & ':shipping.cost.total'}
-#    transition: consume-event
+  #  - name: set-types
+  #    type: inject
+  #    data:
+  #      # sets the type of the observed entities while keeping solution identifier dynamic, which allows to rename the solution without any modifications to this workflow
+  #      stateEntityType: >
+  #        @INSTALL ${$sys.solutionId & ':state'}
+  #      costMetricType: >
+  #        @INSTALL ${$sys.solutionId & ':shipping.cost.total'}
+  #    transition: consume-event
   - name: consume-event
     type: operation
     stateDataFilter:
-      output: ${ result }
+      output: ${ fn:extract-result }
     actions:
       - name: extract-state
         functionRef: zip-to-state
-        actionDataFilter:
-          toStateData: ${ zipcodes_states }
       - name: create-observations
         functionRef: create-observations
     end:

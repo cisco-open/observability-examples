@@ -14,8 +14,6 @@ objects:
     objectsFile: objects/fmm/entity/product.yaml
   - type: fmm:entity
     objectsFile: objects/fmm/entity/state.yaml
-  - type: fmm:entity
-    objectsFile: objects/fmm/entity/team.yaml
   - type: fmm:metric
     objectsFile: objects/fmm/metric/cart_products.yaml
   - type: fmm:metric

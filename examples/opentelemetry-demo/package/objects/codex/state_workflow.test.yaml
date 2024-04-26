@@ -59,3 +59,114 @@ output:
         type: apm:service_instance
         id: CxviTkCLNmSSxjAgOR29OA
       observedAt: 1702534000000
+
+---
+name: state_workflow_test
+workflow: '@INSTALL ${ "codex:workflow/" & $sys.solutionId & ":state_workflow"}'
+logLevel: Trace
+input:
+  source: opentelemetry
+  data:
+    traceId: 6a3e772b8c485b081df65f226073d55f
+    groupedSpans:
+      - attributes:
+          telemetry.sdk.language: rust
+          service.name: shippingservice
+        spans:
+          - spanId: 723c5c2a28136a49
+            traceId: 6a3e772b8c485b081df65f226073d55f
+            name: HTTP GET
+            spanKind: SERVER
+            entities:
+              - type: apm:service_instance
+                id: FQvgYrcZN5yXWKexckQemA
+              - id: BzVBfgXYNQ6NH0bWrLPbeA
+                type: apm:business_transaction
+            startedAt: 1714169824473
+            endedAt: 1714169824473
+            attributes:
+              app.shipping.zip_code: '98052'
+              app.shipping.cost.total: 1479
+              app.shipping.items.count: 15
+          - spanId: 723c5c2a28136a49
+            traceId: 6a3e772b8c485b081df65f226073d55f
+            name: HTTP GET
+            spanKind: SERVER
+            entities:
+              - type: apm:service_instance
+                id: FQvgYrcZN5yXWKexckQemA
+            startedAt: 1714169824473
+            endedAt: 1714169824473
+            attributes:
+              app.shipping.zip_code: '94583'
+              app.shipping.cost.total: 137.6
+              app.shipping.items.count: 15
+          - spanId: 139facc1fca3c1ea
+            parentId: 723c5c2a28136a49
+            traceId: 6a3e772b8c485b081df65f226073d55f
+            name: HTTP GET
+            spanKind: SERVER
+            entities:
+              - type: apm:service_instance
+                id: FQvgYrcZN5yXWKexckQemA
+            startedAt: 1714169824470
+            endedAt: 1714169824473
+            attributes:
+              app.shipping.zip_code: '94043'
+              app.shipping.cost.total: 571.2
+              app.shipping.items.count: 7
+          - spanId: 723c5c2a28136a49
+            traceId: 6a3e772b8c485b081df65f226073d55f
+            name: HTTP GET
+            spanKind: SERVER
+            entities:
+              - type: apm:service_instance
+                id: FQvgYrcZN5yXWKexckQemA
+              - id: BzVBfgXYNQ6NH0bWrLPbeA
+                type: apm:business_transaction
+            startedAt: 1714169824473
+            endedAt: 1714169824473
+            attributes:
+              app.shipping.zip_code: '98052'
+              app.shipping.cost.total: 1479
+              app.shipping.items.count: 5
+output:
+  entities:
+    - id: z7/HFsvWNtOTW2bCDaxALw
+      observedAt: 1714169824470
+      type: '@INSTALL ${ $sys.solutionId & ":state"}'
+      attributes:
+        state.abbreviation: WA
+    - id: LsCHyiFaO5mSIig/FsHaUg
+      observedAt: 1714169824470
+      type: '@INSTALL ${ $sys.solutionId & ":state"}'
+      attributes:
+        state.abbreviation: CA
+  measurements:
+    - entity:
+        id: z7/HFsvWNtOTW2bCDaxALw
+        type: '@INSTALL ${ $sys.solutionId & ":state"}'
+      type: '@INSTALL ${ $sys.solutionId & ":shipping.cost.total"}'
+      attributes:
+        zipcode: '98052'
+      measurements:
+        - doubleValue: 2958
+          timestamp : 1714169824470
+    - entity:
+        id: LsCHyiFaO5mSIig/FsHaUg
+        type: '@INSTALL ${ $sys.solutionId & ":state"}'
+      type: '@INSTALL ${ $sys.solutionId & ":shipping.cost.total"}'
+      attributes:
+        zipcode: '94583'
+      measurements:
+        - doubleValue: 137.6
+          timestamp : 1714169824470
+    - entity:
+        id: LsCHyiFaO5mSIig/FsHaUg
+        type: '@INSTALL ${ $sys.solutionId & ":state"}'
+      type: '@INSTALL ${ $sys.solutionId & ":shipping.cost.total"}'
+      attributes:
+        zipcode: '94043'
+      measurements:
+        - doubleValue: 571.2
+          timestamp : 1714169824470

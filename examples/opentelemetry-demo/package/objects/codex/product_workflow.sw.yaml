@@ -12,35 +12,39 @@ events:
     type: contracts:cloudevent/platform:entity.observed.v1
     kind: produced
   - name: measurement-observed
-    type: contracts:cloudevent/platform:measurement.observed.v1
+    type: contracts:cloudevent/platform:measurement.received.v1
     kind: produced
 functions:
+  - name: map-input
+    type: expression
+    operation: >
+      {'attributes': data.attributes, 'timestamp': data.timestamp}
   - name: create-observations
     type: expression
     operation: |-
       (
-        /* $product := $createEntity(productEntityType, {'product.id': attributes.productId}); */
-        $product := $createEntity(opentelemetrydemo:product, {'product.id': attributes.productId});
+        /* $product := $createEntity(productEntityType, timestamp, {'product.id': attributes.productId}); */
+        $product := $createEntity({ 'entityType': 'opentelemetrydemo:product', 'attributes': {'product.id': attributes.productId} });
         $measurement := {
             'entity': {
               'id': $product.id,
               'type': $product.type
             },
             /* 'type': cartMetricType, */
-            'type': opentelemetrydemo::cart.products.total,
+            'type': 'opentelemetrydemo:cart.products.total',
             'attributes': {
               'user.id': attributes.userId
             },
             'measurements': [
               {
-                'timestamp': $millis(),
+                'timestamp': timestamp,
                 'intValue': attributes.quantity
               }
             ]
         };
       
         {
-          'entity': $product,
+          'entity': $product ~> |$|{'observedAt': $$.timestamp}|,
           'measurement': $measurement
         }
       )
@@ -51,7 +55,7 @@ states:
       - eventRefs:
           - event-received
     stateDataFilter:
-      output: ${ data.attributes }
+      output: ${ fn:map-input }
     transition: filter
   - name: filter
     type: switch
@@ -62,30 +66,26 @@ states:
     #        transition: set-types
     defaultCondition:
       end: true
-#  - name: set-types
-#    type: inject
-#    data:
-#      # sets the type of the observed entities while keeping solution identifier dynamic, which allows to rename the solution without any modifications to this workflow
-#      productEntityType: >
-#        @INSTALL ${$sys.solutionId & ':product'}
-#      cartMetricType: >
-#        @INSTALL ${$sys.solutionId & ':cart.products.total'}
-#    transition: consume-event
+  #  - name: set-types
+  #    type: inject
+  #    data:
+  #      # sets the type of the observed entities while keeping solution identifier dynamic, which allows to rename the solution without any modifications to this workflow
+  #      productEntityType: >
+  #        @INSTALL ${$sys.solutionId & ':product'}
+  #      cartMetricType: >
+  #        @INSTALL ${$sys.solutionId & ':cart.products.total'}
+  #    transition: consume-event
   - name: consume-event
     type: operation
-    stateDataFilter:
-      output: ${ result }
     actions:
-      - name: extract-state
-        functionRef: zip-to-state
-        actionDataFilter:
-          toStateData: ${ zipcodes_states }
       - name: create-observations
         functionRef: create-observations
+    stateDataFilter:
+      output: ${ $ ~> |$|{},['attributes','timestamp']| }
     end:
       terminate: true
       produceEvents:
         - eventRef: entity-observed
-          data: ${ entities }
+          data: ${ entity }
         - eventRef: measurement-observed
-          data: ${ measurements }
+          data: ${ measurement }

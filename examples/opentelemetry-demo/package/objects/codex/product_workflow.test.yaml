@@ -26,12 +26,18 @@ input:
       userId: c666b1a0-029c-11ef-840e-0242ac120018
 output:
   entity:
-    id: '123'
+    id: 'BDiZPArpOuaDYZKQoCP0CQ'
+    observedAt: 1703279885181
     type: '@INSTALL ${ $sys.solutionId & ":product"}'
     attributes:
       product.id: L9ECAV7KIM
-  measurements:
-    - timestamp: 1703279885181
-      attributes:
-        user.id: c666b1a0-029c-11ef-840e-0242ac120018
-      intValue: 5
+  measurement:
+    entity:
+      id: 'BDiZPArpOuaDYZKQoCP0CQ'
+      type: '@INSTALL ${ $sys.solutionId & ":product"}'
+    type : '@INSTALL ${ $sys.solutionId & ":cart.products.total"}',
+    attributes:
+      user.id: c666b1a0-029c-11ef-840e-0242ac120018
+    measurements:
+      - timestamp: 1703279885181
+        intValue: 5
