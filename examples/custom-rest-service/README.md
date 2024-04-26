@@ -96,11 +96,8 @@ The `package` folder contains the files required to create the solution.
     └── function.json
 ```
 
-Run the `fsoc solution fork` command, which creates a fork of the sample solution in the package directory, prefixed with your
-username. So if your local username is 'fred', fork.sh will make a local folder
-named `fredrestdemo`. All of the commands apply a platform tag called 'base' to
-your fork.
-
+Run the `fsoc solution fork` command, which creates a fork of the sample solution in the package directory, prefixed with your username. So if your local username is 'fred', fork.sh will make a local folder
+named `fredrestdemo`. 
 ```shell
 fsoc solution fork --source-dir=package ${USER}restdemo --verbose
 ```
