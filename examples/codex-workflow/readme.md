@@ -379,21 +379,21 @@ That’s it!
 8. check that the metric type was created successfully by navigating to **Schema Browser**:
 
    ```url
-   https://{your tenant}.observe.appdynamics.com/ui/cco/tools/melt/schema
+   <https://{your tenant}.observe.appdynamics.com/ui/cco/tools/melt/schema>
    ```
 
    and searching for `healthrule.violation.count`
 9. check that metric is being populated by navigating to **Query Builder**:
 
    ```url
-   https://{your tenant}.observe.appdynamics.com/ui/cco/tools/melt/query
+   <https://{your tenant}.observe.appdynamics.com/ui/cco/tools/melt/query>
    ```
 
    and pasting the following UQL query (update sampleworkflow to your new solution id):
 
-   ```url
+   ```
    SINCE now - 1h FETCH metrics('sampleworkflow:healthrule.violation.count') {timestamp, value} FROM entities(k8s:workload, apm:service)
    ```
 
    Note that you need to have either k8s or apm monitoring enabled, and at least one health rule violation needs to occur since solution subscription
-10. Alternatively, view the metrics by navigating to the metric explorer at *https://{your tenant}.observe.appdynamics.com/explore/cco/metric-explorer*
+10. Alternatively, view the metrics by navigating to the metric explorer at *<https://{your tenant}.observe.appdynamics.com/explore/cco/metric-explorer>*
