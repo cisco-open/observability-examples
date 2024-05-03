@@ -1,0 +1,14 @@
+{
+  "hosts": [
+    {
+      "name": "swapi",
+      "dnsName": "swapi.dev"
+    }
+  ],
+  "functions": [
+    {
+      "name": "workflowexample-func",
+      "solution": "workflowexample"
+    }
+  ]
+}

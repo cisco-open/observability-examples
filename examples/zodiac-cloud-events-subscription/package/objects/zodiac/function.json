@@ -1,0 +1,8 @@
+{
+    "name": "workflowexample-func",
+    "image": "docker.io/sesergee773/statedworkflow:0.0.17",
+    "scaleBounds": {
+        "lower": 1,
+        "upper": 1
+    }
+}

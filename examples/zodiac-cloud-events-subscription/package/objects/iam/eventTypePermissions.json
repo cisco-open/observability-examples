@@ -1,0 +1,41 @@
+[
+  {
+    "name": "eventTypePermissions",
+    "displayName": "workflowexample:eventTypePermissions",
+    "description": "Permissions for event type",
+    "actionAndResources": [
+      {
+        "action": {
+          "classification": "READ"
+        },
+        "resource": {
+            "type": "workflowexample:event"
+        }
+      },
+      {
+        "action": {
+          "classification": "CREATE"
+        },
+        "resource": {
+          "type": "workflowexample:event"
+        }
+      },
+      {
+        "action": {
+          "classification": "UPDATE"
+        },
+        "resource": {
+          "type": "workflowexample:event"
+        }
+      },
+      {
+        "action": {
+          "classification": "DELETE"
+        },
+        "resource": {
+          "type": "workflowexample:event"
+        }
+      }
+    ]
+  }
+]

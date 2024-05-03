@@ -1,0 +1,43 @@
+[
+  {
+    "name": "statedWorkflowAPIs",
+    "roles": [
+      "iam:observer",
+      "iam:troubleshooter",
+      "iam:configManager",
+      "iam:tenantAdmin"
+    ],
+    "permissions": [
+      {
+        "id": "workflowexample:rootAPI"
+      },
+      {
+        "id": "workflowexample:createWorkflow"
+      },
+      {
+        "id": "workflowexample:getWorkflow"
+      },
+      {
+        "id": "workflowexample:getAllWorkflows"
+      },
+      {
+        "id": "workflowexample:deleteWorkflow"
+      },
+      {
+        "id": "workflowexample:restoreWorkflow"
+      },
+      {
+        "id": "workflowexample:getRestoreSnapshot"
+      },
+      {
+        "id": "workflowexample:sendWorkflowEvent"
+      },
+      {
+        "id": "workflowexample:eventTypePermissions"
+      },
+      {
+        "id": "workflowexample:workflowTypePermissions"
+      }
+    ]
+  }
+]

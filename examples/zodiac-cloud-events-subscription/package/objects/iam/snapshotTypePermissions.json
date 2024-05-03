@@ -1,0 +1,41 @@
+[
+  {
+    "name": "snapshotTypePermissions",
+    "displayName": "workflowexample:snapshotTypePermissions",
+    "description": "Permissions for snapshot type",
+    "actionAndResources": [
+      {
+        "action": {
+          "classification": "READ"
+        },
+        "resource": {
+            "type": "workflowexample:snapshot"
+        }
+      },
+      {
+        "action": {
+          "classification": "CREATE"
+        },
+        "resource": {
+          "type": "workflowexample:snapshot"
+        }
+      },
+      {
+        "action": {
+          "classification": "UPDATE"
+        },
+        "resource": {
+          "type": "workflowexample:snapshot"
+        }
+      },
+      {
+        "action": {
+          "classification": "DELETE"
+        },
+        "resource": {
+          "type": "workflowexample:snapshot"
+        }
+      }
+    ]
+  }
+]

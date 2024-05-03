@@ -1,0 +1,7 @@
+{
+    "name": "workflowexample-func-ce-workflow-sub",
+    "attributesFilter": {
+        "type": "com.appdynamics.workflowexample.workflow.created.v1"
+    },
+    "subscriberFunction": "workflowexample-func"
+}

@@ -1,0 +1,18 @@
+{
+  "name": "homeWorldExample",
+  "type": "workflow",
+  "workflow": {
+    "subscribeParams": {
+      "source": "cloudEvent",
+      "type": "alertingTrigger",
+      "to": "/${action}",
+      "subscriberId": "alertingActionWorkflow",
+      "client": {
+        "type": "test"
+      }
+    },
+    "subscribe$": "$subscribe(subscribeParams)",
+    "action": "${ function($trigger){( $console.log($trigger); $set('/triggers/-', $trigger); $trigger)}}",
+    "triggers": []
+  }
+}

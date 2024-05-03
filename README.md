@@ -18,10 +18,9 @@ README.md file that describes the example and how to run it.
 To set up the environment for running the examples, follow the instructions
 below.
 
-### Prerequisites
+## Prerequisites
 
-This is an example of how to list things you need to use the software and how to
-install them.
+### Installation
 
 - brew
 
@@ -39,13 +38,28 @@ install them.
   brew install jq
   ```
 
-### Installation
-
-1. Clone the repo
+- Clone the repo
 
    ```sh
    git clone https://github.com/cisco-open/observability-examples.git
    ```
+
+
+### Configure FSOC CLI
+
+Set up your FSOC CLI to point to the Cisco Observability Platform and configure
+your credentials.
+```$ fsoc config set auth=oauth url=https://<mytenant>.observe.appdynamics.com```
+The URL should point to your tenant.
+
+Validate configuration
+
+```$ fsoc login
+Login completed successfully.
+```
+
+Refer to the [FSOC CLI documentation](https://github.com/cisco-open/fsoc) for
+more options to configure the FSOC CLI.
 
 ### Validation
 

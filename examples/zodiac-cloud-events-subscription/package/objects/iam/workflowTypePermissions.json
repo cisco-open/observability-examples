@@ -1,0 +1,41 @@
+[
+  {
+    "name": "workflowTypePermissions",
+    "displayName": "workflowexample:workflowTypePermissions",
+    "description": "Permissions for workflow type",
+    "actionAndResources": [
+      {
+        "action": {
+          "classification": "READ"
+        },
+        "resource": {
+            "type": "workflowexample:workflow"
+        }
+      },
+      {
+        "action": {
+          "classification": "CREATE"
+        },
+        "resource": {
+          "type": "workflowexample:workflow"
+        }
+      },
+      {
+        "action": {
+          "classification": "UPDATE"
+        },
+        "resource": {
+          "type": "workflowexample:workflow"
+        }
+      },
+      {
+        "action": {
+          "classification": "DELETE"
+        },
+        "resource": {
+          "type": "workflowexample:workflow"
+        }
+      }
+    ]
+  }
+]
