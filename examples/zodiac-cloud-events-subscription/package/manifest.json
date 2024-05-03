@@ -1,7 +1,7 @@
 {
     "manifestVersion": "1.0.0",
     "name": "workflowexample",
-    "solutionVersion": "0.0.1",
+    "solutionVersion": "0.0.2",
     "dependencies": ["zodiac", "iam", "solutionsecret"],
     "description": "stated workflow test",
     "contact": "sesergee@cisco.com",
@@ -10,6 +10,7 @@
     "readme": "the url for this solution's readme file",
     "types": [
         "types/event.json",
+        "types/snapshot.json",
         "types/workflow.json"
     ],
     "objects": [
@@ -27,6 +28,10 @@
         },
         {
             "type": "zodiac:ceSubscription",
+            "objectsFile": "objects/zodiac/snapshotSubscription.json"
+        },
+        {
+            "type": "zodiac:ceSubscription",
             "objectsFile": "objects/zodiac/eventSubscription.json"
         },
         {
@@ -36,6 +41,10 @@
         {
             "type": "iam:Permission",
             "objectsFile": "objects/iam/eventTypePermissions.json"
+        },
+        {
+            "type": "iam:Permission",
+            "objectsFile": "objects/iam/snapshotTypePermissions.json"
         },
         {
             "type": "iam:Permission",

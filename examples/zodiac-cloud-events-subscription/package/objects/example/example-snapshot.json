@@ -1,0 +1,40 @@
+{
+  "name": "homeWorldSnapshotExample",
+  "type": "snapshot",
+  "snapshot": {
+    "template": {
+      "subscribeParams": {
+        "source": "cloudEvent",
+        "type": "alertingTrigger",
+        "to": "/${action}",
+        "subscriberId": "alertingActionWorkflow",
+        "client": {
+          "type": "test"
+        }
+      },
+      "subscribe$": "$subscribe(subscribeParams)",
+      "action": "${ function($trigger){( $console.log($trigger); $set('/triggers/-', $trigger); $trigger)}}",
+      "triggers": []
+    },
+    "output": {
+      "subscribeParams": {
+        "source": "cloudEvent",
+        "type": "alertingTrigger",
+        "to": "{function:}",
+        "subscriberId": "alertingActionWorkflow",
+        "client": {
+          "type": "test"
+        }
+      },
+      "subscribe$": "listening clientType=test ... ",
+      "action": "{function:}",
+      "triggers": []
+    },
+    "options": {
+      "snapshot": {
+        "seconds": 1
+      },
+      "importPath": "./stated-workflow"
+    }
+  }
+}

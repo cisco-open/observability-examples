@@ -1,0 +1,33 @@
+{
+  "name": "snapshot",
+  "allowedLayers": ["TENANT"],
+  "idGeneration": {
+    "generateRandomId": true
+  },
+  "jsonSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "workflow snapshot Object",
+    "description": "workflow snapshot Object",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "type": {
+          "type": "string",
+          "description": "The workflow type."
+      },
+      "id": {
+        "type": "string",
+        "description": "workflow id."
+      },
+      "snapshot": {
+        "type": "object",
+        "description": "The workflow snapshot object."
+      }
+    },
+    "required": [
+      "type",
+      "id",
+      "snapshot"
+    ]
+  }
+}
